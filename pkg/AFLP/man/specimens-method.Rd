@@ -1,7 +1,8 @@
-\name{specimens-method}
+\name{specimens-methods}
 \docType{methods}
-\alias{specimens-method}
+\alias{specimens-methods}
 \alias{specimens,AFLP-method}
+\alias{specimens,AFLP.outlier-method}
 \title{Methods for extracting specimen information}
 \description{
  Extracts the information on specimen

@@ -1,7 +1,7 @@
-\name{outliers-method}
+\name{outliers-methods}
 \docType{methods}
-\alias{outliers-method}
-\alias{outliers, AFLP-method}
+\alias{outliers-methods}
+\alias{outliers,AFLP-method}
 \title{Extracts outliers}
 \description{
 Extracts outliers

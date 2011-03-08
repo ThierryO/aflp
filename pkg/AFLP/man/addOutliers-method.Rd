@@ -1,8 +1,8 @@
 \name{addOutliers-methods}
 \docType{methods}
 \alias{addOutliers-methods}
-\alias{addOutliers, AFLP-method, AFLP.outlier-method}
-\alias{addOutliers, AFLP-method, data.frame-method}
+\alias{addOutliers,AFLP,AFLP.outlier-method}
+\alias{addOutliers,AFLP,data.frame-method}
 \title{Add outliers to an AFLP object}
 \description{
 Add outliers to an AFLP object

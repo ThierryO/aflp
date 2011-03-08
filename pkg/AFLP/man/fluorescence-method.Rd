@@ -1,7 +1,7 @@
 \name{fluorescence-methods}
 \docType{methods}
 \alias{fluorescence-methods}
-\alias{fluoresence,AFLP-method}
+\alias{fluorescence,AFLP-method}
 \title{Extracting fluorescence from an AFLP object}
 \description{
  Extracting fluorescence from an AFLP object
