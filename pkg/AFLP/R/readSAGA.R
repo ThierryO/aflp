@@ -1,4 +1,4 @@
-read.SAGA <- function(filename, plate, add.to, caseSensitive = TRUE, maxMissing = 0.25){
+readSAGA <- function(filename, add.to, caseSensitive = TRUE, maxMissing = 0.25){
 	Header <- which(readLines(filename, warn = FALSE) == "Note:  Saga MX does not have a gel to gel image intensity calibration mechanism.")
 	data <- read.csv(filename, sep = ",", dec = ".", skip = Header)
 	data <- melt(data, id.vars = "Bins", variable_name = "Replication")

@@ -1,2 +1,2 @@
-importFrom(stats, hclust, princomp)
+importFrom(stats, hclust, princomp, residuals)
 exportPattern(".")

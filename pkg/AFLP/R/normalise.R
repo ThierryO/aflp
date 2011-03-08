@@ -1,4 +1,4 @@
-normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, device = "pdf", SpecimenEffect = FALSE, level = 0.99, transformation = c("logit", "log", "none")){
+normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, device = "pdf", SpecimenEffect = FALSE, level = 0.99, transformation = c("log", "logit", "none")){
 	output <- match.arg(output)
 	transformation <- match.arg(transformation)
 	if(output != "none"){
