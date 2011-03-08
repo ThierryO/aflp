@@ -1,0 +1,15 @@
+Package: AFLP
+Type: Package
+Title: Analysis of AFLP data
+Version: 0.2
+Date: 2011-03-08
+Author: Thierry Onkelinx, Paul Quataert
+Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>
+Description: This package assist the analysis of amplified fragment length 
+  polymorphism (AFLP) DNA fingerprinting. It has function to randomise samples, 
+  calibrate the fluoresences pattern, score the calibrated patterns and do
+  some basic analysis on the scored patterns.
+License: GPL-2
+LazyLoad: yes
+Depends: methods, lme4, reshape, plyr
+Suggests: ggplot2, vegan, xtable
