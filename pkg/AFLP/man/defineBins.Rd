@@ -42,7 +42,7 @@ defineBins(dataset, minPeakHeight, minBinWidth = 1, maxBinWidth = 5, missingPeak
 Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \seealso{
-\code{\link{normalise}}, \code{\link{readAbby}}
+\code{\link{normalise}}, \code{\link{readABI}}
 }
 \references{
 	Arrigo, N., Tuszynski, J., Ehrich, D., Gerdes, T. and Alvarez, N. (2009),

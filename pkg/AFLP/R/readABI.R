@@ -1,4 +1,4 @@
-readAbby <- function(filename, add.to){
+readABI <- function(filename, add.to){
 	if(tail(strsplit(filename, "\\.")[[1]], 1) == "gz"){
 		dataset <- read.delim(gzfile(filename))
 	} else {

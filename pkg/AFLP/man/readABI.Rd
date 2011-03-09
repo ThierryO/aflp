@@ -1,18 +1,18 @@
-\name{readAbby}
+\name{readABI}
 \Rdversion{1.1}
-\alias{readAbby}
+\alias{readABI}
 \title{
-Append fluorescence data from a Abby file to an AFLP object
+Append fluorescence data from a ABI file to an AFLP object
 }
 \description{
-Append fluorescence data from a Abby file to an AFLP object.
+Append fluorescence data from a ABI file to an AFLP object.
 }
 \usage{
-readAbby(filename, add.to)
+readABI(filename, add.to)
 }
 \arguments{
   \item{filename}{
-	The Abby file to be imported.
+	The ABI file to be imported.
 }
   \item{add.to}{
 	The AFLP object were the fluorescence is appended to.
