@@ -1,7 +1,7 @@
 \name{QC<--methods}
 \docType{methods}
 \alias{QC<--methods}
-\alias{QC<--,AFLP-method}
+\alias{QC<-,AFLP-method}
 \title{Adds or overwrites quality control samples}
 \description{
 Adds or overwrites quality control samples in an AFLP object.

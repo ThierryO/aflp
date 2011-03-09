@@ -22,7 +22,7 @@ specimens(x)
 Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \seealso{
-\code{\link{specimens-method}},\code{\link{AFLP-class}},\code{\link{AFLP.outlier-class}}
+\code{\link{specimens-methods}},\code{\link{AFLP-class}},\code{\link{AFLP.outlier-class}}
 }
 \examples{
 	#data(willow)
