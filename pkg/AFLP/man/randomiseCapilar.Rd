@@ -1,0 +1,74 @@
+\name{randomiseCapilar}
+\Rdversion{1.1}
+\alias{randomiseCapilar}
+\title{
+Randomise specimens over different capilar AFLP plates.
+}
+\description{
+This function randomises Specimens over the required number of plates depending on the size of the
+plates, the minimum ratio of replications and the number of quality control 
+specimens per plate. 
+
+}
+\usage{
+randomiseCapilar(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE)
+}
+\arguments{
+  \item{Specimens}{
+	Either the number of specimens or a vector with the names of the specimens.
+}
+  \item{Group}{
+  	A vector indication the a priori clustering of specimens. Must be as long as the number of
+  	specimens and in the same order. When missing, no a priori clustering is assumed. Defaults 
+  	to NULL.
+}
+  \item{FirstLabID}{
+  	Start the replicate numbering at this number. Defaults to 1.
+}
+  \item{Prefix}{
+	Optional prefix for the replicate names. Defaults to "".
+}
+  \item{nCapilar}{
+	Number of available capilars. Defaults to 8.
+}
+
+  \item{nLines}{
+	Number of available lines on a plate. Defaults to 12.
+}
+
+  \item{QC}{
+	A data.frame with the positions of the quality control samples. See the examples.
+}
+
+  \item{rReplicates}{
+	Percentage of the samples that are reserved for replicates. Default = 0.1 (10%).
+}
+  \item{minReplicates}{
+	Minimum number of samples reserved for replicates. Defaults to 8. Only relevant when the
+	number of specimens is very low.
+}
+  \item{fillPlate}{
+	If TRUE, all plates will be filled with samples. If needed, extra specimens are replicated.
+	If FALSE, only the lines will be filled. Possibly leaves one or more lines on the last plate
+	without samples. Defaults to FALSE.
+}
+}
+\value{
+	Results in an AFLP object with randomised replicates.
+}
+\author{
+Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
+}
+\seealso{
+\code{\link{as.AFLP}}, \code{\link{normalise}}
+}
+\examples{
+	randomiseCapilar(100)
+
+	#example with quality control samples
+	QC <- data.frame(Capilar = c("E", "F"), Line = c(5, 5), ID = c("BL", "QCmethod"), Type = c("Blanco","QC"))
+	Specimens <- 180
+	Group <- sample(10, Specimens, replace = TRUE)
+	randomiseCapilar(Specimens, Group, FirstLabID = 626, Prefix = "C/11/", QC = QC)
+}
+\keyword{design}
