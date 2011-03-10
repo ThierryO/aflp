@@ -11,7 +11,7 @@ specimens per plate.
 
 }
 \usage{
-randomiseCapilar(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE)
+randomiseCapilar(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = TRUE)
 }
 \arguments{
   \item{Specimens}{
@@ -50,7 +50,7 @@ randomiseCapilar(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nL
   \item{fillPlate}{
 	If TRUE, all plates will be filled with samples. If needed, extra specimens are replicated.
 	If FALSE, only the lines will be filled. Possibly leaves one or more lines on the last plate
-	without samples. Defaults to FALSE.
+	without samples. Defaults to TRUE.
 }
 }
 \value{
@@ -66,9 +66,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 	randomiseCapilar(100)
 
 	#example with quality control samples
-	QC <- data.frame(Capilar = c("E", "F"), Line = c(5, 5), ID = c("BL", "QCmethod"), Type = c("Blanco","QC"))
-	Specimens <- 180
-	Group <- sample(10, Specimens, replace = TRUE)
-	randomiseCapilar(Specimens, Group, FirstLabID = 626, Prefix = "C/11/", QC = QC)
+	QCsamples <- data.frame(Capilar = c("E", "F"), Line = c(5, 5), ID = c("BL", "QCmethod"), Type = c("Blanco","QC"))
+	nSpecimens <- 180
+	Group <- sample(10, nSpecimens, replace = TRUE)
+	randomiseCapilar(nSpecimens, Group, FirstLabID = 626, Prefix = "C/11/", QC = QCsamples)
 }
 \keyword{design}

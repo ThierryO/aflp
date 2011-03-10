@@ -1,8 +1,20 @@
-randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE){
+#QCsamples <- data.frame(Capilar = c("E", "F"), Line = c(5, 5), ID = c("BL", "QCmethod"), Type = c("Blanco","QC"))
+#nSpecimens <- 180
+#Group <- sample(10, nSpecimens, replace = TRUE)
+#
+#Specimens <- nSpecimens
+#FirstLabID <- 626
+#Prefix = "C/11/"
+#QC = QCsamples
+#nCapilar = 8
+#nLines = 12
+#rReplicates = 0.1
+#minReplicates = 8
+#fillPlate = TRUE
+
+randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = TRUE){
 	if(is.numeric(Specimens)){
-		Specimens <- factor(seq_len(Specimens))
-	} else {
-		Specimens <- factor(Specimens)
+		Specimens <- seq_len(Specimens)
 	}
 	if(missing(Group)){
 		specList <- data.frame(Specimen = Specimens, Group = NA)
@@ -11,11 +23,15 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 	}
 	if(missing(QC)){
 		QC <- data.frame()
+		specList$Specimen <- factor(specList$Specimen)
 	} else {
 		specList <- rbind(specList, data.frame(Specimen = QC$ID, Group = QC$Type))
+		specList$Specimen <- factor(specList$Specimen)
+		QC$ID <- factor(QC$ID, levels = levels(specList$Specimen))
 	}
+	Specimens <- factor(Specimens, levels = levels(specList$Specimen))
 	nPlate <- ceiling(length(Specimens) / ((nCapilar * nLines - nrow(QC)) * (1 - rReplicates)))
-	Design <- expand.grid(Capilar = LETTERS[seq_len(nCapilar)], Line = seq_len(nLines), Plate = seq_len(nPlate), Specimen = NA, Replicate = NA)
+	Design <- expand.grid(Capilar = LETTERS[seq_len(nCapilar)], Line = seq_len(nLines), Plate = seq_len(nPlate), Specimen = factor(NA, levels = levels(Specimens)), Replicate = NA)
 	if(nrow(QC) > 0){
 		Design <- merge(Design, QC, all.x = TRUE)
 		Design$Replicate <- with(Design, ifelse(is.na(ID), NA, paste(ID, Plate, sep = "_")))
@@ -87,8 +103,8 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 			) ^ 10
 		#add replicate between plate and within capilar
 		Remain <- subset(Design, is.na(Specimen) & Plate != i$Plate & Capilar == i$Capilar)
-		j <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:3]
-		Design$Specimen[with(Design, Plate == j$Plate & Capilar == j$Capilar & Line == j$Line)] <- Specimens[1]
+		k <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:3]
+		Design$Specimen[with(Design, Plate == k$Plate & Capilar == k$Capilar & Line == k$Line)] <- Specimens[1]
 		Design$Prob <- 
 			(
 				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
@@ -97,8 +113,8 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 			) ^ 10
 		#add replicate between plate and between capilar
 		Remain <- subset(Design, is.na(Specimen) & Plate != i$Plate & Capilar != i$Capilar)
-		j <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$Prob), ]
-		Design$Specimen[with(Design, Plate == j$Plate & Capilar == j$Capilar & Line == j$Line)] <- Specimens[1]
+		m <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$Prob), ]
+		Design$Specimen[with(Design, Plate == m$Plate & Capilar == m$Capilar & Line == m$Line)] <- Specimens[1]
 		Specimens <- Specimens[-1]
 	}
 	if(sum(is.na(Design$Specimen)) > length(Specimens)){
@@ -111,6 +127,7 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 	Design$Lane <- factor(Design$Line)
 	Design$Specimen <- factor(Design$Specimen)
 	Design$Replicate <- factor(Design$Replicate)
+	Design$Plate <- factor(Design$Plate)
 	Design <- Design[with(Design, order(Plate, Lane, Capilar)), ]
 	if(nrow(QC) > 0){
 		return(
