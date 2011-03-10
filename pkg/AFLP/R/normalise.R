@@ -39,6 +39,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	dataset$Capilar <- factor(dataset$Capilar)
 	dataset$Lane <- factor(dataset$Plate:factor(dataset$Lane))
 	dataset$fMarker <- factor(dataset$Marker)
+	dataset$PC<- factor(dataset$PC)
 	dataset$Normalised <- NA
 	dataset$Score <- NA
 	nPlate <- min(colSums(cast(Plate ~ PC, data = dataset, value = "Fluorescence", fun = length)[, -1, drop = FALSE] > 0))
