@@ -1,2 +1,3 @@
-importFrom(stats, residuals, resid, hclust, princomp)
+importFrom(stats, hclust, princomp)
+importFrom(lme4, residuals, resid) #importing these from stats yield problems.
 exportPattern(".")

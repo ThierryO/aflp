@@ -1,7 +1,7 @@
 Package: AFLP
 Type: Package
 Title: Analysis of AFLP data
-Version: 0.2-9
+Version: 0.2-10
 Date: 2011-03-08
 Author: Thierry Onkelinx, Paul Quataert
 Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>
