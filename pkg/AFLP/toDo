@@ -1,0 +1,56 @@
+#################
+#    Code       #
+#################
+- repeatability: 
+	- replace score with technical difference rate (tdr) Bonin et al. (2004)
+	- add jacard scores for replicates specimens
+
+#################
+#    Examples   #
+#################
+-addOutliers
+-AFLP.outliers
+-AFLP-class
+-as.AFLP
+-border<-
+-border
+-classify
+-clean
+-defineBins
+-fluorescence<-
+-fluorescence
+-ggsave.latex
+-hclust
+-is.AFLP
+-markers
+-normalise
+-outliers
+-princomp
+-QC<-
+-QC
+-quality<-
+-quality
+-randomiseCapilar
+-randomiseSlaggel
+-rbind.AFLP.outlier
+-readABI
+-readSAGA
+-repeatability
+-replicates<-
+-replicates
+-resid
+-residuals
+-specimens
+
+###########################
+#    Data                 #
+###########################
+-dummy data
+-Tilia slabgel
+-Salix slabgel
+-capilar example
+
+###########################
+#    Vignette.............#
+###########################
+-writing a vignette

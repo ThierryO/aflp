@@ -27,6 +27,8 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 	Repeated2 <- cast(Specimen ~ ., data = Repeated, value = "Lane", fun = length)
 	Repeated <- subset(Repeated, Specimen %in% Repeated2$Specimen[Repeated2[, 2] > 1])
 	
+	ExtraCols <- colnames(fluorescence(data))
+	ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
 	dataset <- fluorescence(data)
 	dataset$Score <- NA
 	xLimits <- range(dataset$Normalised)
@@ -70,9 +72,9 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 			x$Score <- cut(x$Normalised, breaks = c(-Inf, Border, Inf), labels = seq_len(length(Border) + 1))
 			x$Score <- as.numeric(levels(x$Score))[x$Score]
 		} else {
-			x$Score <- ifelse(x$Normalised <= min(Border), 0, 1)
+			x$Score <- ifelse(x$Normalised <= Border, 0, 1)
 		}
-		list(Fluorescence = x[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")], Border = data.frame(PC = unique(x$PC), Marker = unique(x$Marker), Border = Border))
+		list(Fluorescence = x[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)], Border = data.frame(PC = unique(x$PC), Marker = unique(x$Marker), Border = Border))
 	})
 	data@Fluorescence <- do.call("rbind", lapply(result, function(x){x$Fluorescence}))
 	if(!keep.border){

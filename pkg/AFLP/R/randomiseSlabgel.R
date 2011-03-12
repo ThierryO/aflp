@@ -112,6 +112,8 @@ randomiseSlabgel <- function(Specimens, Group = NULL, nReplicates = 3, nQC = 0, 
 	}
 	Result <- Result[order(Result$Plate, Result$Lane), c("Plate", "Lane", "Replicate", "Specimen", "Group")]
 	Result$Capilar <- factor("A")
+	Result$Plate <- factor(Result$Plate)
+	Result$Lane <- factor(Result$Lane)
 	if(nQC > 0){
 		return(
 			new("AFLP", 

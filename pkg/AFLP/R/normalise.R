@@ -11,6 +11,8 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			}
 		}
 	}
+	ExtraCols <- colnames(fluorescence(data))
+	ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
 	dataset <- merge(replicates(data), fluorescence(data))
 	if(nrow(replicates(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(replicates(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
@@ -207,6 +209,6 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	})
 	dataset <- do.call("rbind", lapply(results, function(z)z$z))
 	Outliers <- do.call("rbind.AFLP.outlier", lapply(results, function(z)z$Outliers))
-	data@Fluorescence <- dataset[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
+	data@Fluorescence <- dataset[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)]
 	invisible(list(data = data, outliers = Outliers))
 }
