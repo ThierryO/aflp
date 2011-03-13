@@ -19,7 +19,7 @@ automated classification might yield some unwanted artifacts. Correct them with
 the \code{link{border<-}} function.
 }
 \usage{
-classify(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0.03, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE)
+classify(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE)
 }
 \arguments{
   \item{data}{
@@ -37,11 +37,11 @@ classify(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakR
   \item{tresholdPeakRatio}{
 	The minimum height of a potential peak in the density relative to the maximum
 	density. Peak with a ratio lower that this threshold are not considered as
-	peaks.
+	peaks. Defaults to 0.03.
 }
   \item{tresholdMonomorph}{
 	Calculate the ratio of 'absent' and 'present' bins in a marker. Consider the
-	marker as monomorph if either of them is smaller than the treshold.
+	marker as monomorph if either of them is smaller than the threshold. Defaults to 0. 
 }
   \item{path}{
 	the path where the figures are saved. Only used if \code{output = "tex"}. 

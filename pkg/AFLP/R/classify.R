@@ -1,4 +1,4 @@
-classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0.03, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE){
+classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE){
 	output <- match.arg(output)
 	if(output != "none"){
 		if(!require(ggplot2)){
@@ -33,7 +33,7 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 	dataset$Score <- NA
 	xLimits <- range(dataset$Normalised)
 	dataset$PCMarker <- paste(dataset$PC, dataset$Marker, sep = "_")
-	#x <- subset(dataset, PCMarker == "5_210")
+	#x <- subset(dataset, PCMarker == "PC1_788")
 	#x <- subset(dataset, PCMarker == "B_100.803076923077")
 	result <- dlply(dataset, "PCMarker", function(x){
 		if(keep.border){
@@ -72,7 +72,11 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 			x$Score <- cut(x$Normalised, breaks = c(-Inf, Border, Inf), labels = seq_len(length(Border) + 1))
 			x$Score <- as.numeric(levels(x$Score))[x$Score]
 		} else {
-			x$Score <- ifelse(x$Normalised <= Border, 0, 1)
+			if(is.finite(Border)){
+				x$Score <- ifelse(x$Normalised <= Border, 0, 1)
+			} else {
+				x$Score <- ifelse(x$Sign > 0, 1, 0)
+			}
 		}
 		list(Fluorescence = x[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)], Border = data.frame(PC = unique(x$PC), Marker = unique(x$Marker), Border = Border))
 	})

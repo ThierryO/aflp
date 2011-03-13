@@ -42,7 +42,7 @@ dummySlabgel <- function(nSpecimen = 50, nGroup = 2, nMarker = 50,
 	}
 	fluorescence(dummy) <- 
 		Fluor[, 
-			c("PC", "Plate", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", "Truth")
+			c("PC", "Plate", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", "Truth", "Gap", "TypeMarker")
 		]
 	return(dummy)
 }

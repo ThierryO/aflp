@@ -111,6 +111,9 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		model <- lmer(data@model, data = z)
 		z$Normalised <- residuals(model)
 		REF <- ranef(model)
+		if("fMarker" %in% names(REF)){
+			z$Sign <- REF[["fMarker"]][, "(Intercept)"][z$fMarker]
+		}
 		if(output == "tex"){
 			cat("\\section{", currentPC, "}\n\n", sep = "")
 			PCn <- sub(":", "_", currentPC)
@@ -208,6 +211,9 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		)
 	})
 	dataset <- do.call("rbind", lapply(results, function(z)z$z))
+	if("Sign" %in% colnames(dataset)){
+		ExtraCols <- c("Sign", ExtraCols)
+	}
 	Outliers <- do.call("rbind.AFLP.outlier", lapply(results, function(z)z$Outliers))
 	data@Fluorescence <- dataset[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)]
 	invisible(list(data = data, outliers = Outliers))
