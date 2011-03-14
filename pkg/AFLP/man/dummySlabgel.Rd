@@ -8,11 +8,18 @@ Simulate some data for a slab gel.
 Simulate some data for a slab gel.
 }
 \usage{
-dummySlabgel(nSpecimen = 50, nGroup = 2, nMarker = 50, nReplicate = 3,
-	markerProb = c(Monomorph = 0.2, Group = 0.5), 
-	fixed = c(Intercept = 10, MarkerTrend = -0.008),
-	maxGap = 10, betaShape = c(0.3, 0.8),
-	SD = c(Specimen = 0.3, Replicate = 0.4, Marker = 0.6, Plate = 0.3, Noise = 1),
+dummySlabgel(nSpecimen = 50, nGroup = 2, nMarker = 50,
+	nReplicate = 3,
+	markerProb = c(Monomorph = 0.2, Group = 0.5),
+	fixed = c(Intercept = 9, Score = 1.7, MarkerTrend = -0.007),
+	betaShape = c(0.3, 0.8),
+	VarCov = list(
+		Specimen = matrix(c(0.080, -0.017, -0.017, 0.025), ncol = 2), 
+		Replicate = matrix(c(0.116, -0.059, -0.059, 0.043), ncol = 2), 
+		Marker = matrix(c(0.581, -0.236, -0.236, 0.326), ncol = 2), 
+		Plate = matrix(c(0.154, -0.035, -0.035, 0.027), ncol = 2), 
+		Noise = 0.292
+	),
 	transformation = c("log", "logit", "none"))
 }
 \arguments{
@@ -34,18 +41,22 @@ dummySlabgel(nSpecimen = 50, nGroup = 2, nMarker = 50, nReplicate = 3,
 	Defaults to c(Monomorph = 0.2, Group = 0.5).
 }
   \item{fixed}{
-	Overall mean fluorescence and trend in fluorescence along the Defaults to c(Intercept = 10, MarkerTrend = -0.008).
-}
-  \item{maxGap}{
-	The maximal difference between absent and present band. Defaults to 10.
+	Overall mean fluorescence, overall difference in magnitude between present and absent bands 
+	and trend in fluorescence along the Defaults to c(Intercept = 9, Score = 1.7, MarkerTrend = -0.008).
 }
   \item{betaShape}{
 	Shapeparameters of a beta distribution used to generate the probability that a marker is 
 	present. Defaults to c(0.3, 0.8).
 }
-  \item{SD}{
-	Variability of the specimens, replicates, markers, plates and noise. Defaults to 
-	c(Specimen = 0.3, Replicate = 0.4, Marker = 0.6, Plate = 0.3, Noise = 1).
+  \item{VarCov}{
+	A list of variance covariance matrices of the specimens, replicates, markers, plates and 
+	noise. Defaults to list(
+		Specimen = matrix(c(0.080, -0.017, -0.017, 0.025), ncol = 2), 
+		Replicate = matrix(c(0.116, -0.059, -0.059, 0.043), ncol = 2), 
+		Marker = matrix(c(0.581, -0.236, -0.236, 0.326), ncol = 2), 
+		Plate = matrix(c(0.154, -0.035, -0.035, 0.027), ncol = 2), 
+		Noise = 0.292
+	).
 }
   \item{transformation}{
 	Which transformation to use on the raw fluorescence data. Valid choises are "log", "logit" 
