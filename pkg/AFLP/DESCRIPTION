@@ -1,9 +1,9 @@
 Package: AFLP
 Type: Package
 Title: Analysis of AFLP data
-Version: 0.2-13
-Date: 2011-03-08
-Author: Thierry Onkelinx, Paul Quataert
+Version: 0.2-14
+Date: 2011-03-15
+Author: Thierry Onkelinx, Pieter Verschelde, Paul Quataert
 Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>
 Description: This package assist the analysis of amplified fragment length 
   polymorphism (AFLP) DNA fingerprinting. It has function to randomise samples, 
@@ -11,5 +11,5 @@ Description: This package assist the analysis of amplified fragment length
   some basic analysis on the scored patterns.
 License: GPL-2
 LazyLoad: yes
-Depends: methods, lme4, reshape, plyr
+Depends: R (>= 2.10.0), methods, lme4, reshape, plyr
 Suggests: ggplot2, vegan, xtable, mvtnorm

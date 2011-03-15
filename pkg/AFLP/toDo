@@ -11,7 +11,6 @@
 -addOutliers
 -AFLP.outliers
 -AFLP-class
--as.AFLP
 -border<-
 -border
 -classify
@@ -34,7 +33,6 @@
 -randomiseSlaggel
 -rbind.AFLP.outlier
 -readABI
--readSAGA
 -repeatability
 -replicates<-
 -replicates
@@ -45,8 +43,6 @@
 ###########################
 #    Data                 #
 ###########################
--dummy data
--Tilia slabgel
 -Salix slabgel
 -capilar example
 
