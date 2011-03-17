@@ -1,5 +1,5 @@
-readSAGA <- function(filename, add.to, caseSensitive = TRUE, maxMissing = 0.25){
-	Header <- which(readLines(filename, warn = FALSE) == "Note:  Saga MX does not have a gel to gel image intensity calibration mechanism.")
+readSAGA <- function(filename, add.to, maxMissing = 0.25, textclean = function(x){x}){
+	Header <- which(substr(readLines(filename, warn = FALSE), 1, 80) == "Note:  Saga MX does not have a gel to gel image intensity calibration mechanism.")
 	data <- read.csv(filename, sep = ",", dec = ".", skip = Header)
 	data <- melt(data, id.vars = "Bins", variable_name = "Replication")
 	data$value[data$value == 0] <- NA
@@ -8,17 +8,13 @@ readSAGA <- function(filename, add.to, caseSensitive = TRUE, maxMissing = 0.25){
 	data$PC <- factor(substr(data$PC, 2, nchar(data$PC) - 6))
 	data$Normalised <- NA
 	data$Score <- NA
-	if(!caseSensitive){
-		levels(data$Replicate) <- toupper(levels(data$Replicate))
-		levels(replicates(add.to)$Replicate) <- toupper(levels(replicates(add.to)$Replicate))
-		levels(fluorescence(add.to)$Replicate) <- toupper(levels(fluorescence(add.to)$Replicate))
-	}
+	levels(data$Replicate) <- textclean(levels(data$Replicate))
 	if(!all(levels(data$Replicate) %in% levels(replicates(add.to)$Replicate))){
-		warning("Not all replicates from the file exist in add.to. Missing replicates were omitted.")
 		MissingReplicates <- !(levels(data$Replicate) %in% levels(replicates(add.to)$Replicate))
 		if(mean(MissingReplicates) > maxMissing){
 			stop("To much missing replicates. Data not added.")
 		} else {
+			warning("Not all replicates from the file exist in add.to. Missing replicates were omitted.")
 			data <- subset(data, Replicate %in% levels(replicates(add.to)$Replicate))
 		}
 	}

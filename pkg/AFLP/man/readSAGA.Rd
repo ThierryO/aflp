@@ -6,9 +6,11 @@ Append fluorescence data from a SAGA file to an AFLP object
 }
 \description{
 Append fluorescence data from a SAGA file to an AFLP object.
+
+NOTE: the SAGA file must be in the default CSV format.
 }
 \usage{
-readSAGA(filename, add.to, caseSensitive = TRUE, maxMissing = 0.25)
+readSAGA(filename, add.to, maxMissing = 0.25, textclean = function(x){x})
 }
 \arguments{
   \item{filename}{
@@ -17,12 +19,14 @@ readSAGA(filename, add.to, caseSensitive = TRUE, maxMissing = 0.25)
   \item{add.to}{
 	The AFLP object were the fluorescence is appended to.
 }
-  \item{caseSensitive}{
-	Use case sensitivity on the labels of the replicates. Defaults to TRUE.
-}
   \item{maxMissing}{
 	A relative threshold. If more than this ratio of replicates have missing data, then
 	no data is appended.
+}
+  \item{textclean}{
+	A user defined function to alter the names of the replicates after reading the SAGA file.
+	Only useful when the names in the SAGA files do not match with the names in the AFLP
+	object. Directly using the correct names is SAGA solves a lot of problems.
 }
 }
 \value{
