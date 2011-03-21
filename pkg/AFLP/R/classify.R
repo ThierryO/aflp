@@ -33,7 +33,7 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 	dataset$Score <- NA
 	xLimits <- range(dataset$Normalised)
 	dataset$PCMarker <- paste(dataset$PC, dataset$Marker, sep = "_")
-	#x <- subset(dataset, PCMarker == "PC1_788")
+	#x <- subset(dataset, PCMarker == "PC4_339")
 	#x <- subset(dataset, PCMarker == "B_100.803076923077")
 	result <- dlply(dataset, "PCMarker", function(x){
 		if(keep.border){
@@ -66,7 +66,7 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 			}
 		}
 		if(length(Border) > maxBorder){
-			Border <- Border[order(borderProbability(Fluor = x, Borders = Border, Repeated = Repeated)) %in% seq_len(maxBorder)]
+			Border <- Border[order(borderProbability(Fluor = x, Borders = Border, Repeated = Repeated))][seq_len(maxBorder)]
 		}
 		if(length(Border) > 1){
 			x$Score <- cut(x$Normalised, breaks = c(-Inf, Border, Inf), labels = seq_len(length(Border) + 1))
