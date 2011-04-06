@@ -1,9 +1,9 @@
 Package: AFLP
 Type: Package
 Title: Analysis of AFLP data
-Version: 0.2-16
-Date: 2011-03-17
-Author: Thierry Onkelinx, Pieter Verschelde, Paul Quataert
+Version: 0.2-17
+Date: 2011-04-06
+Author: Thierry Onkelinx, Pieter Verschelde, Sabrina Neirynck, David Halfmaerten, Gerrit Genouw, Paul Quataert
 Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>
 Description: This package assist the analysis of amplified fragment length 
   polymorphism (AFLP) DNA fingerprinting. It has function to randomise samples, 

@@ -33,7 +33,7 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 	dataset$Score <- NA
 	xLimits <- range(dataset$Normalised)
 	dataset$PCMarker <- paste(dataset$PC, dataset$Marker, sep = "_")
-	#x <- subset(dataset, PCMarker == "PC4_339")
+	#x <- subset(dataset, PCMarker == "PC4_680")
 	#x <- subset(dataset, PCMarker == "B_100.803076923077")
 	result <- dlply(dataset, "PCMarker", function(x){
 		if(keep.border){
@@ -75,7 +75,7 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 			if(is.finite(Border)){
 				x$Score <- ifelse(x$Normalised <= Border, 0, 1)
 			} else {
-				x$Score <- ifelse(x$Sign > 0, 1, 0)
+				x$Score <- ifelse(is.na(x$Sign) | x$Sign > 0, 1, 0)
 			}
 		}
 		list(Fluorescence = x[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)], Border = data.frame(PC = unique(x$PC), Marker = unique(x$Marker), Border = Border))

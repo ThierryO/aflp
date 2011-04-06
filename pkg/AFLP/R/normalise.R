@@ -108,6 +108,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	#z <- subset(dataset, PC == "1")
 	results <- daply(dataset, "PC", function(z){
 		currentPC <- unique(z$PC) 
+		z$fMarker <- factor(z$fMarker)
 		model <- lmer(data@model, data = z)
 		z$Normalised <- residuals(model)
 		REF <- ranef(model)
