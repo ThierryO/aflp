@@ -1,8 +1,8 @@
 Package: AFLP
 Type: Package
 Title: Analysis of AFLP data
-Version: 0.2-18
-Date: 2011-04-06
+Version: 0.2-19
+Date: 2011-04-07
 Author: Thierry Onkelinx, Pieter Verschelde, Sabrina Neirynck, David Halfmaerten, Gerrit Genouw, Paul Quataert
 Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>
 Description: This package assist the analysis of amplified fragment length 

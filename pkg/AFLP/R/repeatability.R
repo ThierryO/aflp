@@ -133,17 +133,6 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		})
 		replicatedData <- merge(replicatedData, Polymorph)
 		replicatedData <- merge(replicatedData, replicates(data)[, c("Replicate", "Plate")])
-#		JaccardSpecimen <- na.omit(ddply(replicatedData, c("PC", "Specimen"), function(x){
-#			y <- cast(data = x, PC + Marker ~ Replicate, value = "Score")
-#			distance <- vegdist(t(y[, -1:-2]), method = "jaccard", na.rm = TRUE)
-#			c(Min = min(distance), Mean = mean(distance), Max = max(distance), SD = sd(distance))
-#		}))
-#		DistanceSpecimen <- ddply(replicatedData, c("PC", "Specimen"), function(x){
-#			y <- cast(data = x, PC + Marker ~ Replicate, value = "Normalised")[, -1:-2]
-#			distance <- dist(y)
-#			c(Min = min(distance), Mean = mean(distance), Max = max(distance), SD = sd(distance))
-#		})
-
 		replicatedData$Score <- factor(replicatedData$Score > 0, levels = c(FALSE, TRUE))
 		repeatable <- ddply(replicatedData, c("PC", "Marker", "Specimen", "Polymorph"), function(x){
 			table(x$Score)
@@ -181,12 +170,14 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		qcSpecimenInd <- ddply(replicatedData, c("PC", "Specimen"), function(x){
 			Z <- data.frame(t(combn(levels(x$Replicate)[unique(x$Replicate)], 2)))
 			colnames(Z) <- c("ReplicateA", "ReplicateB")
-			Z$Score <- apply(Z, 1, function(reps){
+			Z <- cbind(Z, t(apply(Z, 1, function(reps){
 				tmp <- subset(x, Replicate %in% reps, select = c("Marker", "Score"))
-				sum(with(tmp, table(Marker, Score))[, 1] != 1) / length(unique(x$Marker))
-			})
+				c(Errors = sum(with(tmp, table(Marker, Score))[, 1] != 1), MaxErrors  = length(unique(x$Marker)))
+			})))
 			Z
 		})
+		qcSpecimenInd$Score <- 1 - qcSpecimenInd$Errors / qcSpecimenInd$MaxErrors
+		quality(data, "replicate") <- qcSpecimenInd
 		qcPlate <- ddply(replicatedData, .(PC), function(x){
 			Z <- subset(expand.grid(PlateA = unique(x$Plate), PlateB = unique(x$Plate)), as.numeric(PlateA) <= as.numeric(PlateB))
 			Z <- cbind(Z, 
@@ -204,13 +195,11 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			)
 			Z
 		})
+		quality(data, "plate") <- qcPlate
 		
 		qcPC$ScorePC <- sprintf("%.1f%%", 100 * qcPC$Score)
 		qcSpecimen <- merge(qcSpecimen, qcPC[, c("PC", "ScorePC")])
 		qcMarker <- merge(qcMarker, qcPC[, c("PC", "ScorePC")])
-
-#		ggplot(qcSpecimen, aes(x = MaxDelta, y = Total)) + geom_smooth() + geom_point(aes(size = Delta))
-#		ggplot(merge(qcSpecimen, JaccardSpecimen), aes(x = Score, y = Mean)) + geom_smooth(se = FALSE, span = 1) + geom_point() + scale_x_continuous("Herhaalbaarheids score") + scale_y_continuous("Gemiddelde Jaccard afstand")
 		if(!is.null(minMarker)){
 			if(bootstrap){
 				warning("Outliers from bootstrap procedure overwritten")
@@ -229,9 +218,36 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		}
 		if(output == "tex"){
 			ggsave.latex(pMarker, caption = "Repeatability for markers based on score", filename = paste("QCMarkerScore", device, sep = "."), width = 6, height = 2.5, path = path)
-			print(xtable(qcMarker[, c("PC", "Marker", "Delta", "Total", "Score")], caption = "Repeatability for markers based on score", align = "rrllll", digits = c(0, 0, 0, 0, 0, 3), display = c("s", "s", "s", "f", "f", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
+			qcMarker$Polymorph <- qcMarker$Polymorph == 1
+			print(
+				xtable(qcMarker[, c("PC", "Marker", "Polymorph", "Score", "Errors", "MaxErrors", "nBin")], 
+					caption = "Repeatability for markers based on score", 
+					align = "rrlrllll", 
+					digits = c(0, 0, 0, 0, 3, 0, 0, 0), 
+					display = c("s", "s", "f", "d", "f", "d", "d", "d"))
+			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 			ggsave.latex(pSpecimen, caption = "Repeatability for specimens based on score", filename = paste("QCSpecimenScore", device, sep = "."), width = 6, height = 2.5, path = path)
-			print(xtable(qcSpecimen[, c("PC", "Specimen", "Delta", "Total", "Score")], caption = "Repeatability for specimens based on score", align = "rrrllr", digits = c(0, 0, 0, 0, 0, 3), display = c("s", "s", "s", "f", "f", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
+			print(
+				xtable(qcSpecimen[, c("PC", "Specimen", "Score", "Errors", "MaxErrors", "nBin", "MaxErrorsAll", "nBinAll")], 
+					caption = "Repeatability for specimens based on score", 
+					align = "rrrllllll", 
+					digits = c(0, 0, 0, 3, 0, 0, 0, 0, 0), 
+					display = c("s", "s", "s", "f", "d", "d", "d", "d", "d"))
+			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
+			print(
+				xtable(qcSpecimenInd[, c("PC", "Specimen", "ReplicateA", "ReplicateB", "Score", "Errors", "MaxErrors")], 
+					caption = "Repeatability for replicates based on score", 
+					align = "rrrrrlll", 
+					digits = c(0, 0, 0, 0, 0, 3, 0, 0), 
+					display = c("s", "s", "s", "s", "s", "f", "d", "d"))
+			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
+			print(
+				xtable(qcPlate, 
+					caption = "Repeatability for plates based on score", 
+					align = "rrrrlll", 
+					digits = c(0, 0, 0, 0,  3, 0, 0), 
+					display = c("s", "s", "s", "s", "f", "d", "d"))
+			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 		} else if (output == "screen"){
 			X11()
 			print(pMarker + opts(title = "Repeatability for markers (score)"))
@@ -249,8 +265,6 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], "\r\n", sep = "")
 				print(cast(PlateA ~ PlateB, data = Z, value = "Score", fill = "", fun = function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
-
-		}
 		}
 	}
 	invisible(list(data = data, Outliers = result))

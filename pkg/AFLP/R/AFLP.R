@@ -20,6 +20,14 @@ setClass("AFLP",
 				Errors = integer(), MaxErrors = integer(), nBin = integer(), 
 				MaxErrorsAll = integer(), nBinAll = integer()
 			),
+			Replicate = data.frame(
+				PC = factor(), Specimen = factor(), ReplicateA = factor(),
+				ReplicateB = factor(), Score = numeric(), Errors = integer(), MaxErrors = integer()
+			),
+			Plate = data.frame(
+				PC = factor(), PlateA = factor(), PlateB = factor(),
+				Score = numeric(), Errors = integer(), MaxErrors = integer()
+			),
 			Overall = data.frame(
 				PC = factor(), Score = numeric(), Errors = integer(), 
 				MaxErrors = integer(), nBin = integer(), MaxErrorsAll = integer(), 

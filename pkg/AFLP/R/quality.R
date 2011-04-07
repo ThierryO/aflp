@@ -1,7 +1,7 @@
 setGeneric("quality", function(x, which = c("all", "marker", "specimen", "overall")) {
 	standardGeneric("quality")
 })
-setMethod("quality", signature(x = "AFLP"), function(x, which = c("all", "marker", "specimen", "overall")) {
+setMethod("quality", signature(x = "AFLP"), function(x, which = c("all", "marker", "specimen", "replicate", "plate", "overall")) {
 	which <- match.arg(which)
 	if(which == "all"){
 		x@Quality
@@ -11,6 +11,10 @@ setMethod("quality", signature(x = "AFLP"), function(x, which = c("all", "marker
 		x@Quality[["Overall"]]
 	} else if(which == "specimen"){
 		x@Quality[["Specimen"]]
+	} else if(which == "replicate"){
+		x@Quality[["Replicate"]]
+	} else if(which == "plate"){
+		x@Quality[["Plate"]]
 	}
 })
 
@@ -18,7 +22,7 @@ setGeneric("quality<-", function(data, which = c("all", "marker", "specimen", "o
 	standardGeneric("quality<-")
 })
 
-setMethod("quality<-", signature(data = "AFLP"), function(data, which = c("all", "marker", "specimen", "overall"), value){
+setMethod("quality<-", signature(data = "AFLP"), function(data, which = c("all", "marker", "specimen", "replicate", "plate", "overall"), value){
 	which <- match.arg(which)
 	if(which == "all"){
 		data@Quality <- value
@@ -28,6 +32,10 @@ setMethod("quality<-", signature(data = "AFLP"), function(data, which = c("all",
 		data@Quality[["Overall"]] <- value
 	} else if(which == "specimen"){
 		data@Quality[["Specimen"]] <- value
+	} else if(which == "replicate"){
+		data@Quality[["Replicate"]] <- value
+	} else if(which == "plate"){
+		data@Quality[["Plate"]] <- value
 	}
 	data
 })

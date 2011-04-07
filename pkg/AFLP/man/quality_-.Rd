@@ -19,7 +19,7 @@ quality(data, which) <- value
 	with the corresponding quality information.
 }
   \item{which}{
-	A character value matching c("all", "marker", "specimen", "overall"). Defaults to "all".
+	A character value matching c("all", "marker", "specimen", "replicate", "plate", "overall"). Defaults to "all".
 }
 }
 \value{

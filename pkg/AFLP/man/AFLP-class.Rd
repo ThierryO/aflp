@@ -30,8 +30,8 @@ plates use \code{\link{as.AFLP}} to convert the positions to an AFLP object.
     	eliminated observations due to outliers}
     \item{\code{Borders}:}{A \code{"data.frame"} containing the cut-levels for
     	each marker}
-    \item{\code{Quality}:}{A \code{"list"} containing three data.frames with the quality of the
-    markers, specimens and the overall quality. The quality is based on the scores of the 
+    \item{\code{Quality}:}{A \code{"list"} containing five data.frames with the quality of the
+    markers, specimens, replicates, plates and the overall quality. The quality is based on the scores of the 
     specimens with multiple replicates.}
   }
 }
