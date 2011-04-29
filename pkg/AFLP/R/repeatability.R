@@ -168,13 +168,12 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		qcPC <- merge(qcPC, qcPC2)
 		qcPC$Score <- with(qcPC, (MaxErrorsAll - Errors) / MaxErrorsAll)
 		quality(data, "overall") <- qcPC[, c("PC", "Score", "Errors", "MaxErrors", "nBin", "MaxErrorsAll", "nBinAll")]
-		x <- subset(replicatedData, PC == "PC1" & Specimen == "BLANG-1-1")
 		qcSpecimenInd <- ddply(replicatedData, c("PC", "Specimen"), function(x){
 			Z <- data.frame(t(combn(levels(x$Replicate)[unique(x$Replicate)], 2)))
 			colnames(Z) <- c("ReplicateA", "ReplicateB")
 			Z <- cbind(Z, t(apply(Z, 1, function(reps){
 				tmp <- subset(x, Replicate %in% reps, select = c("Marker", "Score"))
-				c(Errors = sum(with(tmp, table(Marker, Score))[, 1] != 1), MaxErrors  = length(unique(x$Marker)))
+				c(Errors = sum(with(tmp, table(Marker, Score))[, 1] == 1), MaxErrors  = length(unique(x$Marker)))
 			})))
 			Z
 		})
@@ -198,6 +197,19 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			Z
 		})
 		quality(data, "plate") <- qcPlate
+		tmp <- ddply(replicatedData, .(PC, Marker, Specimen), function(z){
+			data.frame(Errors = min(table(z$Score)), MaxErrors = floor(nrow(z) / 2))
+		})
+		qcGlobal <- data.frame(Type = "Global", Score = 1 - sum(tmp$Errors) / sum(tmp$MaxErrors), Errors = sum(tmp$Errors), MaxErrors = sum(tmp$MaxErrors))
+		tmp <- unique(replicatedData[, c("Specimen", "Replicate", "Plate")])
+		Design <- with(tmp, table(Specimen, Plate))
+		Selection <- subset(as.data.frame(Design), Freq > 1)
+		Selection$SpecimenPlate <- paste(Selection$Specimen, Selection$Plate, sep = ":")
+		replicatedData$SpecimenPlate <- paste(replicatedData$Specimen, replicatedData$Plate, sep = ":")
+		tmp <- ddply(subset(replicatedData, SpecimenPlate %in% Selection$SpecimenPlate), .(PC, Marker, Specimen), function(z){
+			data.frame(Errors = min(table(z$Score)), MaxErrors = floor(nrow(z) / 2))
+		})
+		qcGlobal <- rbind(qcGlobal, data.frame(Type = "Within plates", Score = 1 - sum(tmp$Errors) / sum(tmp$MaxErrors), Errors = sum(tmp$Errors), MaxErrors = sum(tmp$MaxErrors)))
 		
 		qcPC$ScorePC <- sprintf("%.1f%%", 100 * qcPC$Score)
 		qcSpecimen <- merge(qcSpecimen, qcPC[, c("PC", "ScorePC")])
@@ -242,6 +254,13 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 					align = "rrrrrlll", 
 					digits = c(0, 0, 0, 0, 0, 3, 0, 0), 
 					display = c("s", "s", "s", "s", "s", "f", "d", "d"))
+			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
+			print(
+				xtable(qcPlate, 
+					caption = "Repeatability for plates based on score", 
+					align = "rrrrlll", 
+					digits = c(0, 0, 0, 0,  3, 0, 0), 
+					display = c("s", "s", "s", "s", "f", "d", "d"))
 			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 			print(
 				xtable(qcPlate, 

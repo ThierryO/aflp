@@ -6,7 +6,12 @@ setClass("AFLP",
 	prototype = prototype(Specimens = data.frame(Specimen = factor(), Group = factor()), 
 		Replicates = data.frame(Replicate = factor(), Specimen = factor(), Plate = factor(), 
 			Capilar = factor(), Lane = factor()), 
-		QC = list(Specimen = data.frame(Specimen = factor(), Type = factor()), Replicate = data.frame(Replicate = factor(), Type = factor())), 
+		QC = list(
+			Specimen = data.frame(
+				Specimen = factor(), Type = factor()), 
+			Replicate = data.frame(Replicate = factor(), 
+				Type = factor())
+		), 
 		Fluorescence = data.frame(PC = factor(), Replicate = factor(), Fluorescence = numeric(), Marker = numeric(), Normalised = numeric() , Score = factor()),
 		model = log(Fluorescence) ~ 1, outliers = AFLP.outlier(),
 		Borders = data.frame(PC = factor(), Marker = numeric(), Border = numeric()),
@@ -28,10 +33,14 @@ setClass("AFLP",
 				PC = factor(), PlateA = factor(), PlateB = factor(),
 				Score = numeric(), Errors = integer(), MaxErrors = integer()
 			),
-			Overall = data.frame(
+			Primercombination = data.frame(
 				PC = factor(), Score = numeric(), Errors = integer(), 
 				MaxErrors = integer(), nBin = integer(), MaxErrorsAll = integer(), 
 				nBinAll = integer()
+			),
+			Global = data.frame(
+				Type = factor(), Score = numeric(), Errors = integer(), 
+				MaxErrors = integer()
 			)
 		)
 	)

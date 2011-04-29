@@ -12,7 +12,7 @@ specimens per plate.
 }
 \usage{
 randomiseCapilar(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, 
-	nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = TRUE)
+	nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE)
 }
 \arguments{
   \item{Specimens}{
