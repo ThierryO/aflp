@@ -1,18 +1,4 @@
-#QCsamples <- data.frame(Capilar = c("E", "F"), Line = c(5, 5), ID = c("BL", "QCmethod"), Type = c("Blanco","QC"))
-#nSpecimens <- 180
-#Group <- sample(10, nSpecimens, replace = TRUE)
-#
-#Specimens <- nSpecimens
-#FirstLabID <- 626
-#Prefix = "C/11/"
-#QC = QCsamples
-#nCapilar = 8
-#nLines = 12
-#rReplicates = 0.1
-#minReplicates = 8
-#fillPlate = TRUE
-
-randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = TRUE){
+randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE){
 	if(is.numeric(Specimens)){
 		Specimens <- seq_len(Specimens)
 	}

@@ -1,4 +1,4 @@
-setGeneric("quality", function(x, which = c("all", "marker", "specimen", "overall")) {
+setGeneric("quality", function(x, which = c("all", "marker", "specimen", "replicate","plate", "overall")) {
 	standardGeneric("quality")
 })
 setMethod("quality", signature(x = "AFLP"), function(x, which = c("all", "marker", "specimen", "replicate", "plate", "overall")) {
@@ -18,7 +18,7 @@ setMethod("quality", signature(x = "AFLP"), function(x, which = c("all", "marker
 	}
 })
 
-setGeneric("quality<-", function(data, which = c("all", "marker", "specimen", "overall"), value){
+setGeneric("quality<-", function(data, which = c("all", "marker", "specimen", "replicate", "plate", "overall"), value){
 	standardGeneric("quality<-")
 })
 

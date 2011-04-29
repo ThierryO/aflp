@@ -15,7 +15,11 @@ clean <- function(data){
 	if(!all(replicates(data)$Specimen %in% specimens(data)$Specimen)) stop("Missing specimens in replicates")
 	dataset <- merge(replicates(data), fluorescence(data))
 	if(!all(dataset$Replicate %in% replicates(data)$Replicate)) stop("Missing replicates in fluorescence")
-	if(!all(replicates(data)$Replicate %in% unique(dataset$Replicate))) stop("Missing replicates in fluorescence")
+	if(!all(replicates(data)$Replicate %in% unique(dataset$Replicate))){
+		cat("Replicates without fluoresence data\r\n")
+		cat(levels(replicates(data)$Replicate)[unique(replicates(data)$Replicate[!replicates(data)$Replicate %in% unique(dataset$Replicate)])])
+		warning("Replicates without fluoresence data")
+	} 
 	if(nrow(replicates(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(replicates(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL

@@ -8,15 +8,14 @@ Extracts the quality data of an AFLP object
 Extracts the quality of an AFLP object
 }
 \usage{
-quality(x, which = c("all", "marker", "specimen", "overall"))
+quality(x, which = c("all", "marker", "specimen", "replicate", "plate", "overall"))
 }
 \arguments{
   \item{x}{
 	An AFLP object
 }
   \item{which}{
-	Which quality information to extract. Must be one of c("all", "marker", "specimen", 
-	"overall"). Defaults to "all".
+	Which quality information to extract. Must be one of c("all", "marker", "specimen", "replicate", "plate", "overall"). Defaults to "all".
 }
 }
 \value{

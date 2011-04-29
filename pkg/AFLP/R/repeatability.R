@@ -26,6 +26,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 	}
 	rawData$Raw <- eval(parse(text = sub("Fluorescence", "rawData$Fluorescence", data@model[2])))
 	replicatedData <- merge(subset(rawData, Replicate %in% Repeated$Replicate), Repeated)
+	replicatedData <- subset(replicatedData, Specimen %in% levels(replicatedData$Specimen)[rowSums(with(replicatedData, table(Specimen, Replicate)) > 1) > 1])
 	Variances <- ddply(replicatedData, c("PC", "Marker", "Specimen"), function(z){
 		with(z, c(Raw = var(Raw, na.rm = TRUE), Normalised = var(Normalised, na.rm = TRUE)))
 	})
@@ -167,6 +168,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		qcPC <- merge(qcPC, qcPC2)
 		qcPC$Score <- with(qcPC, (MaxErrorsAll - Errors) / MaxErrorsAll)
 		quality(data, "overall") <- qcPC[, c("PC", "Score", "Errors", "MaxErrors", "nBin", "MaxErrorsAll", "nBinAll")]
+		x <- subset(replicatedData, PC == "PC1" & Specimen == "BLANG-1-1")
 		qcSpecimenInd <- ddply(replicatedData, c("PC", "Specimen"), function(x){
 			Z <- data.frame(t(combn(levels(x$Replicate)[unique(x$Replicate)], 2)))
 			colnames(Z) <- c("ReplicateA", "ReplicateB")
