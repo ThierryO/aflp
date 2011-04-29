@@ -167,7 +167,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		colnames(qcPC2)[2:3] <- c("MaxErrorsAll", "nBinAll")
 		qcPC <- merge(qcPC, qcPC2)
 		qcPC$Score <- with(qcPC, (MaxErrorsAll - Errors) / MaxErrorsAll)
-		quality(data, "overall") <- qcPC[, c("PC", "Score", "Errors", "MaxErrors", "nBin", "MaxErrorsAll", "nBinAll")]
+		quality(data, "primercombination") <- qcPC[, c("PC", "Score", "Errors", "MaxErrors", "nBin", "MaxErrorsAll", "nBinAll")]
 		qcSpecimenInd <- ddply(replicatedData, c("PC", "Specimen"), function(x){
 			Z <- data.frame(t(combn(levels(x$Replicate)[unique(x$Replicate)], 2)))
 			colnames(Z) <- c("ReplicateA", "ReplicateB")
@@ -210,6 +210,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			data.frame(Errors = min(table(z$Score)), MaxErrors = floor(nrow(z) / 2))
 		})
 		qcGlobal <- rbind(qcGlobal, data.frame(Type = "Within plates", Score = 1 - sum(tmp$Errors) / sum(tmp$MaxErrors), Errors = sum(tmp$Errors), MaxErrors = sum(tmp$MaxErrors)))
+		quality(data, "global") <- qcGlobal
 		
 		qcPC$ScorePC <- sprintf("%.1f%%", 100 * qcPC$Score)
 		qcSpecimen <- merge(qcSpecimen, qcPC[, c("PC", "ScorePC")])
