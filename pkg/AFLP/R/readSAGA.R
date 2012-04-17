@@ -4,8 +4,13 @@ readSAGA <- function(filename, add.to, maxMissing = 0.25, textclean = function(x
 	data <- melt(data, id.vars = "Bins", variable_name = "Replication")
 	data$value[data$value == 0] <- NA
 	colnames(data) <- c("PC", "Replicate", "Fluorescence")
-	data$Marker <- as.numeric(substr(data$PC, nchar(data$PC) - 4, nchar(data$PC)))
-	data$PC <- factor(substr(data$PC, 2, nchar(data$PC) - 6))
+  if(class(data$PC) == "character"){
+  	data$Marker <- as.numeric(substr(data$PC, nchar(data$PC) - 4, nchar(data$PC)))
+  	data$PC <- factor(substr(data$PC, 2, nchar(data$PC) - 6))
+  } else {
+    data$Marker <- as.numeric(substr(levels(data$PC), nchar(levels(data$PC)) - 4, nchar(levels(data$PC))))[data$PC]
+    data$PC <- factor(substr(levels(data$PC), 2, nchar(levels(data$PC)) - 6)[data$PC])
+  }
 	data$Normalised <- NA
 	data$Score <- NA
 	levels(data$Replicate) <- textclean(levels(data$Replicate))

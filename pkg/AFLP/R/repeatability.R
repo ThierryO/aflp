@@ -17,7 +17,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 	if(nrow(specimens(outliers(data))) > 0){
 		Repeated <- subset(merge(Repeated, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))[, c("Specimen", "Replicate", "Lane")]
 	}
-	Repeated2 <- cast(Specimen ~ ., data = Repeated, value = "Lane", fun = length)
+	Repeated2 <- cast(Specimen ~ ., data = Repeated, value = "Lane", fun.aggregate = length)
 	Repeated <- subset(Repeated, Specimen %in% Repeated2$Specimen[Repeated2[, 2] > 1])
 	rawData <- fluorescence(data)
 	if(nrow(markers(outliers(data))) > 0){
@@ -281,11 +281,11 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			print(qcSpecimen)
 			d_ply(qcSpecimenInd, .(PC, Specimen), function(Z){
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], ", Specimen: ", levels(Z$Specimen)[Z$Specimen[1]], "\r\n", sep = "")
-				print(cast(ReplicateA ~ ReplicateB, data = Z, value = "Score", fill = "", fun = function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
+				print(cast(ReplicateA ~ ReplicateB, data = Z, value = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
 			d_ply(qcPlate, .(PC), function(Z){
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], "\r\n", sep = "")
-				print(cast(PlateA ~ PlateB, data = Z, value = "Score", fill = "", fun = function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
+				print(cast(PlateA ~ PlateB, data = Z, value = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
 		}
 	}
