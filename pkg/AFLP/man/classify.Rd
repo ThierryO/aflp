@@ -75,8 +75,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{border<-}}, \code{\link{border}}, \code{\link{normalise}}, \code{\link[ggplot2]{ggsave}}
 }
 \examples{
-#	data(willowN)
-#	classify(willowN)
+  data(Tilia)
+  Tilia <- normalise(Tilia, output = "none")$data
+  Tilia <- classify(Tilia, output = "none")
 }
 \keyword{manip}
 \keyword{classif}

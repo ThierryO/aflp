@@ -25,9 +25,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{AFLP-class}}, \code{\link{as.AFLP}}
 }
 \examples{
-n <- 100
-is.AFLP(n)
-#dataset <- as.AFLP(n)
-#is.AFLP(dataset)
+  n <- 100
+  is.AFLP(n)
+  data(Tilia)
+  is.AFLP(Tilia)
 }
 \keyword{attribute}

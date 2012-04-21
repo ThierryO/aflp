@@ -43,10 +43,10 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link[ggplot2]{ggsave}}
 }
 \examples{
-#	data(willow)
-#	library(ggplot2)
-#	p <- ggplot(fluorescence(willow), aes(x = Fluorescence)) + geom_density() + scale_x_log10()
-#	ggsave.latex(p, filename = "test.pdf")
+	data(Tilia)
+	library(ggplot2)
+	p <- ggplot(fluorescence(Tilia), aes(x = Fluorescence)) + geom_density() + scale_x_log10()
+	ggsave.latex(p, filename = "test.pdf")
 }
 \keyword{hplot}
 \keyword{graphs}

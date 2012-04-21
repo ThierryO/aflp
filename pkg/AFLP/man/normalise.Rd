@@ -62,14 +62,8 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{classify}}, \code{\link[ggplot2]{ggsave}}
 }
 \examples{
-  data(TiliaDesign)
-  Tilia <- as.AFLP(TiliaDesign)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc1", package = "AFLP"), add.to = Tilia)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc2", package = "AFLP"), add.to = Tilia)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc3", package = "AFLP"), add.to = Tilia)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc4", package = "AFLP"), add.to = Tilia)
-  Tilia <- clean(Tilia)
-  normalise(Tilia, output = "none")
+  data(Tilia)
+  nOutput <- normalise(Tilia, output = "none")
 }
 \keyword{models}
 \keyword{regression}

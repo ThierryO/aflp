@@ -25,7 +25,7 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{AFLP-class}}
 }
 \examples{
-#data(willow)
-#fluorescence(willow)
+  data(Tilia)
+  fluorescence(Tilia)
 }
 \keyword{attribute}

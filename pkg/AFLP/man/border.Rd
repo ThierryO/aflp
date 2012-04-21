@@ -32,7 +32,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{border-method}}
 }
 \examples{
-	#data(willowN)
-	#border(willowN)
+  data(Tilia)
+  output <- normalise(Tilia, output = "none")$data
+  output <- classify(output, output = "none")
+  BorderList <- border(output)
 }
 \keyword{attribute}

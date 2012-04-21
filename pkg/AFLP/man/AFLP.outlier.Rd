@@ -37,5 +37,6 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \examples{
 AFLP.outlier()
+AFLP.outlier(Replicate = data.frame(PC = "PC1", Replicate = c("C.09.1744", "C.09.1745"), Observed = numeric(2)))
 }
 \keyword{classes}

@@ -59,7 +59,6 @@ plates use \code{\link{as.AFLP}} to convert the positions to an AFLP object.
 	\code{\link{specimens}}
 }
 \examples{
-#data(willow)
-#willow
+  data(Tilia)
 }
 \keyword{classes}

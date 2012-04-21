@@ -185,7 +185,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			}
 		}
 		if(!is.null(Outliers$Replicate) && nrow(Outliers$Replicate) > 0){
-      if(class(Outliers$Replicate$Label) == "character"){
+      if(class(Outliers$Replicate$Label) == "character"){ 
 			  oReplicate <- data.frame(PC = currentPC, Replicate = sapply(strsplit(Outliers$Replicate$Label, ":"), function(x)x[1]), Observed = Outliers$Replicate$Observed)
       } else {
         oReplicate <- data.frame(PC = currentPC, Replicate = sapply(strsplit(levels(Outliers$Replicate$Label), ":"), function(x)x[1])[Outliers$Replicate$Label], Observed = Outliers$Replicate$Observed)

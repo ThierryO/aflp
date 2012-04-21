@@ -27,7 +27,13 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{normalise}}
 }
 \examples{
-#	data(willow)
-#	clean(willow)
+  data(TiliaDesign)
+  TiliaC <- as.AFLP(TiliaDesign)
+  TiliaC <- readSAGA(system.file("extdata", "Tilia_bandvaluespc1", package = "AFLP"), add.to = TiliaC)
+  TiliaC <- readSAGA(system.file("extdata", "Tilia_bandvaluespc2", package = "AFLP"), add.to = TiliaC)
+  TiliaC <- readSAGA(system.file("extdata", "Tilia_bandvaluespc3", package = "AFLP"), add.to = TiliaC)
+  TiliaC <- readSAGA(system.file("extdata", "Tilia_bandvaluespc4", package = "AFLP"), add.to = TiliaC)
+  data(Tilia)
+  all.equal(clean(TiliaC), Tilia)
 }
 \keyword{manip}

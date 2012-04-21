@@ -28,7 +28,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{fluorescence}}
 }
 \examples{
-#data(willowN)
-#border(willowN, pc = "5", marker = 503) <- Inf
+  data(Tilia)
+  Fl <- fluorescence(Tilia)
+  Fl$Fluorescence[10] <- NA
+  fluorescence(Tilia) <- Fl
 }
 \keyword{manip}

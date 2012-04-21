@@ -27,7 +27,7 @@ as.AFLP(x, ...)
 Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \examples{
-data(TiliaDesign)
-Tilia <- as.AFLP(TiliaDesign)
+  data(TiliaDesign)
+  Tilia <- as.AFLP(TiliaDesign)
 }
 \keyword{manip}
