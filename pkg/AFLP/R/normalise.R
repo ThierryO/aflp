@@ -41,7 +41,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	dataset$Capilar <- factor(dataset$Capilar)
 	dataset$Lane <- factor(dataset$Plate:factor(dataset$Lane))
 	dataset$fMarker <- factor(dataset$Marker)
-	dataset$PC<- factor(dataset$PC)
+	dataset$PC <- factor(dataset$PC)
 	dataset$Normalised <- NA
 	dataset$Score <- NA
 	nPlate <- min(colSums(cast(Plate ~ PC, data = dataset, value = "Fluorescence", fun = length)[, -1, drop = FALSE] > 0))
@@ -105,9 +105,9 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	}
 	data@model <- as.formula(formula)
 	#z <- subset(dataset, PC == "B")
-	#z <- subset(dataset, PC == "1")
+	#z <- subset(dataset, PC == "PC1")
 	results <- daply(dataset, "PC", function(z){
-		currentPC <- unique(z$PC) 
+		currentPC <- z$PC[1]
 		z$fMarker <- factor(z$fMarker)
 		model <- lmer(data@model, data = z)
 		z$Normalised <- residuals(model)
@@ -185,7 +185,11 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			}
 		}
 		if(!is.null(Outliers$Replicate) && nrow(Outliers$Replicate) > 0){
-			oReplicate <- data.frame(PC = currentPC, Replicate = sapply(strsplit(Outliers$Replicate$Label, ":"), function(x)x[1]), Observed = Outliers$Replicate$Observed)
+      if(class(Outliers$Replicate$Label) == "character"){
+			  oReplicate <- data.frame(PC = currentPC, Replicate = sapply(strsplit(Outliers$Replicate$Label, ":"), function(x)x[1]), Observed = Outliers$Replicate$Observed)
+      } else {
+        oReplicate <- data.frame(PC = currentPC, Replicate = sapply(strsplit(levels(Outliers$Replicate$Label), ":"), function(x)x[1])[Outliers$Replicate$Label], Observed = Outliers$Replicate$Observed)
+      }
 		} else {
 			oReplicate <- data.frame(PC = character(), Replicate = character(), Observed = numeric())
 		}

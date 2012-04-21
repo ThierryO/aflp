@@ -29,12 +29,16 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{addOutliers-methods}}, \code{\link{AFLP-class}}, \code{\link{AFLP.outlier-class}}
 }
 \examples{
-#data(willow)
-#tmp <- normalise(clean(willow), output = "none")
-#willow <- clean(willow)
-#addOutliers(willow, tmp$outliers)
-#addOutliers(willow, replicates(tmp$outliers))
-
+  data(TiliaDesign)
+  Tilia <- as.AFLP(TiliaDesign)
+  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc1", package = "AFLP"), add.to = Tilia)
+  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc2", package = "AFLP"), add.to = Tilia)
+  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc3", package = "AFLP"), add.to = Tilia)
+  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc4", package = "AFLP"), add.to = Tilia)
+  Tilia <- clean(Tilia)
+  output <- normalise(Tilia, output = "none")
+  addOutliers(Tilia, output$outliers)
+  addOutliers(Tilia, replicates(output$outliers))
 }
 \keyword{attribute}
 
