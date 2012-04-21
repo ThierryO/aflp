@@ -41,17 +41,43 @@ clean <- function(data){
 		dataset$Observed <- NULL
 	}
 	dataset$Missing <- ifelse(is.na(dataset$Fluorescence), "M", "A")
-	dataset$Observed <- NA
 	Outliers <- list()
-	Outliers[["Specimen"]] <- subset(cast(PC + Specimen + Observed ~ Missing, data = dataset, value = "Score", fun = length), A == 0)[, 1:3]
-	class(Outliers[["Specimen"]]) <- "data.frame"
-	Outliers[["Replicate"]] <- subset(cast(PC + Replicate + Observed ~ Missing, data = dataset, value = "Score", fun = length), A == 0)[, 1:3]
-	class(Outliers[["Replicate"]]) <- "data.frame"
-	Outliers[["Marker"]] <- subset(cast(PC + Marker + Observed ~ Missing, data = dataset, value = "Score", fun = length), A == 0)[, 1:3]
-	class(Outliers[["Marker"]]) <- "data.frame"
+  Counts <- table(interaction(dataset$PC, dataset$Specimen, drop = TRUE), dataset$Missing)
+  if(any(Counts[, 1] == 0)){
+    sOutliers <- unique(dataset[, c("PC", "Specimen")])
+    sOutliers$Observed <- NA
+    sOutliers$Comb <- interaction(sOutliers$PC, sOutliers$Specimen, drop = TRUE)
+    Outliers[["Specimen"]] <- sOutliers[sOutliers$Comb %in% rownames(Counts)[Counts[, 1] == 0], c("PC", "Specimen", "Observed")]
+  } else {
+    Outliers[["Specimen"]] <- dataset[NULL, c("PC", "Specimen")]
+    Outliers[["Specimen"]]$Observed <- numeric(0)
+  }
+	Counts <- table(interaction(dataset$PC, dataset$Replicate, drop = TRUE), dataset$Missing)
+	if(any(Counts[, 1] == 0)){
+	  sOutliers <- unique(dataset[, c("PC", "Replicate")])
+	  sOutliers$Observed <- NA
+	  sOutliers$Comb <- interaction(sOutliers$PC, sOutliers$Replicate, drop = TRUE)
+	  Outliers[["Replicate"]] <- sOutliers[sOutliers$Comb %in% rownames(Counts)[Counts[, 1] == 0], c("PC", "Replicate", "Observed")]
+	} else {
+	  Outliers[["Replicate"]] <- dataset[NULL, c("PC", "Replicate")]
+	  Outliers[["Replicate"]]$Observed <- numeric(0)
+	}
+	Counts <- table(interaction(dataset$PC, dataset$Marker, drop = TRUE), dataset$Missing)
+	if(any(Counts[, 1] == 0)){
+	  sOutliers <- unique(dataset[, c("PC", "Marker")])
+	  sOutliers$Observed <- NA
+	  sOutliers$Comb <- interaction(sOutliers$PC, sOutliers$Marker, drop = TRUE)
+	  Outliers[["Marker"]] <- sOutliers[sOutliers$Comb %in% rownames(Counts)[Counts[, 1] == 0], c("PC", "Marker", "Observed")]
+	} else {
+	  Outliers[["Marker"]] <- dataset[NULL, c("PC", "Marker")]
+	  Outliers[["Marker"]]$Observed <- numeric(0)
+	}
 	Outliers[["Residuals"]] <- dataset[is.na(dataset$Fluorescence), c("PC", "Replicate", "Marker", "Observed")]
 	data <- addOutliers(data, AFLP.outlier(Specimen = Outliers[["Specimen"]], Replicate = Outliers[["Replicate"]], 
 		Marker = Outliers[["Marker"]], Residual = Outliers[["Residuals"]]))
+  if(any(table(dataset$PC, dataset$Replicate, dataset$Marker) > 1)){
+    warning("Replicates with multiple records per marker detected.")
+  }
 #	Fluor$PCMarker <- with(Fluor, factor(paste(PC, Marker)))
 #	Peaks <- data.frame(with(Fluor, table(Replicate, PCMarker)))
 #	if(sum(Peaks$Freq > 1) > 0){
