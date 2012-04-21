@@ -1,6 +1,6 @@
 \name{normalise}
 \Rdversion{1.1}
-\alias{normalise}
+\alias{normalise} 
 \title{
 Perform a normalisation (calibration) procedure on the observed fluorescence.
 }
