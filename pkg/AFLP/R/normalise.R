@@ -1,5 +1,6 @@
 normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, device = "pdf", SpecimenEffect = FALSE, level = 0.99, transformation = c("log", "logit", "none")){
-	output <- match.arg(output)
+print("A")
+  output <- match.arg(output)
 	transformation <- match.arg(transformation)
 	if(output != "none"){
 		if(!require(ggplot2)){
@@ -12,29 +13,34 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		}
 	}
 	ExtraCols <- colnames(fluorescence(data))
-	ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
+print("B")
+  ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
 	dataset <- merge(replicates(data), fluorescence(data))
+print("C")
 	if(nrow(replicates(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(replicates(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL
 		dataset$Observed <- NULL
 	}
+print("D")
 	if(nrow(specimens(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL
 		dataset$Observed <- NULL
 	}
+print("E")
 	if(nrow(markers(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(markers(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL
 		dataset$Observed <- NULL
 	}
+print("F")
 	if(nrow(residuals(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(residuals(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL
 		dataset$Observed <- NULL
 	}
-	
+print("H")
 	dataset$Specimen <- factor(dataset$Specimen)
 	dataset$Replicate <- factor(dataset$Replicate)
 	dataset$Plate <- factor(dataset$Plate)
@@ -73,6 +79,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			formula <- paste(formula, "+ Lane")
 		}
 	}
+print("I")
 	if(SpecimenEffect){
 	  nSpecimen <- min(colSums(table(dataset$Specimen, dataset$PC) > 0))
     uni <- unique(dataset[, c("Specimen", "Replicate", "PC")])
@@ -98,17 +105,20 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			formula <- paste(formula, " + Replicate")
 		}
 	}
+print("J")
 	nMarker <- min(colSums(table(dataset$Marker, dataset$PC) > 0))
 	if(nMarker > 5){
 		formula <- paste(formula, " + Marker + (1|fMarker)")
 	} else if(nMarker > 1){
 		formula <- paste(formula, " + fMarker")
 	}
+print("K")
 	data@model <- as.formula(formula)
 	#z <- subset(dataset, PC == "B")
 	#z <- subset(dataset, PC == "PC1")
 	results <- daply(dataset, "PC", function(z){
-		currentPC <- z$PC[1]
+print("L")
+    currentPC <- z$PC[1]
 		z$fMarker <- factor(z$fMarker)
 		model <- lmer(data@model, data = z)
 		z$Normalised <- residuals(model)
@@ -124,16 +134,19 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			cat("\\end{verbatim}\n")
 		}
 		Outliers <- lapply(names(REF), function(i){
-			df <- data.frame(Observed = REF[[i]]$"(Intercept)", Label = rownames(REF[[i]]))
-			df$Theoretical <- qnorm(ppoints(nrow(df)))[order(order(df$Observed))]
-			df <- cbind(df, predict(lm(Observed ~ Theoretical, data = df), newdata = df, interval = "prediction", level = level))
-			df$Outlier <- factor(ifelse(df$Observed >= df$lwr & df$Observed <= df$upr, "Acceptable", "Possible"), levels = c("Possible", "Acceptable"))
-			df$Outlier[with(df, Observed > min(Observed[Outlier == "Acceptable"]) & Observed < max(Observed[Outlier == "Acceptable"]))] <- "Acceptable"
+print("M")
+			dfm <- data.frame(Observed = REF[[i]]$"(Intercept)", Label = rownames(REF[[i]]))
+			dfm$Theoretical <- qnorm(ppoints(nrow(dfm)))[order(order(dfm$Observed))]
+			dfm <- cbind(dfm, predict(lm(Observed ~ Theoretical, data = dfm), newdata = dfm, interval = "prediction", level = level))
+			dfm$Outlier <- factor(ifelse(dfm$Observed >= dfm$lwr & dfm$Observed <= dfm$upr, "Acceptable", "Possible"), levels = c("Possible", "Acceptable"))
+#m <- gam(Observed ~ s(Theoretical, bs = "cs", k = 3), data = dfm)
+#dfm$fit <- fitted(m)        
+			dfm$Outlier[with(dfm, Observed > min(Observed[Outlier == "Acceptable"]) & Observed < max(Observed[Outlier == "Acceptable"]))] <- "Acceptable"
 			if(output != "none"){
 				p <- 
-					ggplot(df, aes_string(x = "Theoretical", y = "Observed", ymin = "lwr", ymax = "upr")) + geom_ribbon(alpha = 0.1) + geom_line(aes_string(y = "fit")) + geom_point(aes_string(colour = "Outlier"))
+				  ggplot(dfm, aes_string(x = "Theoretical", y = "Observed", ymin = "lwr", ymax = "upr")) + geom_ribbon(alpha = 0.1) + geom_line(aes_string(y = "fit")) + geom_point(aes_string(colour = "Outlier"))
 			}
-			Outlier <- df[df$Outlier != "Acceptable", c("Label", "Observed")]
+			Outlier <- dfm[dfm$Outlier != "Acceptable", c("Label", "Observed")]
 			if(output == "tex"){
 				cat("\\subsection{", i, "}\n\n", sep = "")
 				caption <- paste("QQ-plot of the random effects at the level", i, "for primer combination", currentPC)
@@ -156,17 +169,19 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			}
 			Outlier
 		})
+print("N")
 		names(Outliers) <- names(REF)
-		df <- data.frame(Observed = z$Normalised, Replicate = z$Replicate, Marker = z$Marker)
-		df$Theoretical <- qnorm(ppoints(nrow(df)))[order(order(df$Observed))]
-		df <- cbind(df, predict(lm(Observed ~ Theoretical, data = df), newdata = df, interval = "prediction", level = level))
-		df$Outlier <- factor(ifelse(df$Observed >= df$lwr & df$Observed <= df$upr, "Acceptable", "Possible"), levels = c("Possible", "Acceptable"))
-		df$Outlier[with(df, Observed > min(Observed[Outlier == "Acceptable"]) & Observed < max(Observed[Outlier == "Acceptable"]))] <- "Acceptable"
+		dfm <- data.frame(Observed = z$Normalised, Replicate = z$Replicate, Marker = z$Marker)
+		dfm$Theoretical <- qnorm(ppoints(nrow(dfm)))[order(order(dfm$Observed))]
+		dfm <- cbind(dfm, predict(lm(Observed ~ Theoretical, data = dfm), newdata = dfm, interval = "prediction", level = level))
+		dfm$Outlier <- factor(ifelse(dfm$Observed >= dfm$lwr & dfm$Observed <= dfm$upr, "Acceptable", "Possible"), levels = c("Possible", "Acceptable"))
+		dfm$Outlier[with(dfm, Observed > min(Observed[Outlier == "Acceptable"]) & Observed < max(Observed[Outlier == "Acceptable"]))] <- "Acceptable"
+print("P")
 		if(output != "none"){
 			p <- 
-				ggplot(df, aes(x = Theoretical, y = Observed)) + geom_point(aes(colour = Outlier)) + geom_line(aes(y = fit)) + geom_line(aes(y = upr), linetype = 2) + geom_line(aes(y = lwr), linetype = 2)
+				ggplot(dfm, aes(x = Theoretical, y = Observed)) + geom_point(aes(colour = Outlier)) + geom_line(aes(y = fit)) + geom_line(aes(y = upr), linetype = 2) + geom_line(aes(y = lwr), linetype = 2)
 		}
-		Outlier <- df[df$Outlier != "Acceptable", c("Replicate", "Marker", "Observed")]
+		Outlier <- dfm[dfm$Outlier != "Acceptable", c("Replicate", "Marker", "Observed")]
 		if(output == "tex"){
 			cat("\\subsection{Globale outliers}\n\n")
 			caption <- paste("QQ-plot of the residuals for primer combination", currentPC)
@@ -185,6 +200,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 				cat("Probably no outliers\n")
 			}
 		}
+print("Q")
 		if(!is.null(Outliers$Replicate) && nrow(Outliers$Replicate) > 0){
       if(class(Outliers$Replicate$Label) == "character"){ 
 			  oReplicate <- data.frame(PC = currentPC, Replicate = sapply(strsplit(Outliers$Replicate$Label, ":"), function(x)x[1]), Observed = Outliers$Replicate$Observed)
@@ -209,6 +225,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		} else {
 			oResidual <- data.frame(PC = character(), Replicate = character(), Marker = numeric(), Observed = numeric())
 		}
+print("R")
 		list(z = z, Outliers = AFLP.outlier(
 			Replicate = oReplicate[with(oReplicate, order(PC, Observed)), ],
 			Specimen = oSpecimen[with(oSpecimen, order(PC, Observed)), ],
@@ -216,11 +233,14 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			Residual = oResidual[with(oResidual, order(PC, Observed)), ])
 		)
 	})
+print("S")
 	dataset <- do.call("rbind", lapply(results, function(z)z$z))
 	if("Sign" %in% colnames(dataset)){
 		ExtraCols <- c("Sign", ExtraCols)
 	}
 	Outliers <- do.call("rbind.AFLP.outlier", lapply(results, function(z)z$Outliers))
+print("T")
 	data@Fluorescence <- dataset[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)]
+print("U")
 	invisible(list(data = data, outliers = Outliers))
 }

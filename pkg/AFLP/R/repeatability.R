@@ -18,7 +18,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		Repeated <- subset(merge(Repeated, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))[, c("Specimen", "Replicate", "Lane")]
 	}
   
-	Repeated2 <- dcast(as.formula("Specimen ~ ."), data = Repeated, value.var = "Lane", fun.aggregate = length)
+	Repeated2 <- cast(as.formula("Specimen ~ ."), data = Repeated, value.var = "Lane", fun.aggregate = length)
 	Repeated <- subset(Repeated, Specimen %in% Repeated2$Specimen[Repeated2[, 2] > 1])
 	rawData <- fluorescence(data)
 	if(nrow(markers(outliers(data))) > 0){
@@ -47,11 +47,11 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 	}
 	if(all(is.na(rawData$Normalised))){
 		if(bootstrap){
-			bootMarkerDeviance <- dcast(as.formula("PC + Marker ~ ."), data = ldply(bootDeviance, function(x){x$Marker}), value.var = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
+			bootMarkerDeviance <- cast(as.formula("PC + Marker ~ ."), data = ldply(bootDeviance, function(x){x$Marker}), value.var = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
 			colnames(bootMarkerDeviance)[3] <- "Raw"
 			MarkerDeviance <- merge(MarkerDeviance, bootMarkerDeviance, by = c("PC", "Marker"), suffixes = c("", ".y"))
 			MarkerDeviance$Outlier <- factor(ifelse(with(MarkerDeviance, Raw > Raw.y), 1, 2), levels = 1:2, labels = c("Possible", "Acceptable"))
-			bootSpecimenDeviance <- dcast(as.formula("PC + Specimen ~ ."), data = ldply(bootDeviance, function(x){x$Specimen}), value = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
+			bootSpecimenDeviance <- cast(as.formula("PC + Specimen ~ ."), data = ldply(bootDeviance, function(x){x$Specimen}), value = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
 			colnames(bootSpecimenDeviance)[2] <- "Raw"
 			SpecimenDeviance <- merge(SpecimenDeviance, bootSpecimenDeviance, by = c("PC", "Specimen"), suffixes = c("", ".y"))
 			SpecimenDeviance$Outlier <- factor(ifelse(with(SpecimenDeviance, Raw > Raw.y), 1, 2), levels = 1:2, labels = c("Possible", "Acceptable"))
@@ -286,7 +286,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			})
 			d_ply(qcPlate, "PC", function(Z){
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], "\r\n", sep = "")
-				print(dcast(formula = PlateA ~ PlateB, data = Z, value.var = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
+				print(cast(formula = PlateA ~ PlateB, data = Z, value.var = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
 		}
 	}

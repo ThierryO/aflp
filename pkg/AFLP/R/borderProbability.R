@@ -4,7 +4,7 @@ borderProbability <- function(Fluor, Borders, Repeated){
 	})
 	Testset <- merge(Repeated, Fluor)[, c("Specimen", "Normalised")]
 	Multis <- table(Testset$Specimen)
-	Testset <- subset(Testset, Specimen %in% names(Multis)[Multis > 1])
+	Testset <- Testset[Testset$Specimen %in% names(Multis)[Multis > 1], ]
 	RandomProbability <- ddply(Testset, "Specimen", function(z){
 		Present <- sapply(Borders, function(x){sum(z$Normalised >= x)})
 		Delta <- apply(cbind(Present, nrow(z) - Present), 1, min)
@@ -14,7 +14,7 @@ borderProbability <- function(Fluor, Borders, Repeated){
 			})
 		)
 		sapply(seq_along(Delta), function(i){
-			sum(subset(ProbError, Errors <= Delta[i])[, i + 1])
+			sum(ProbError[ProbError$Errors <= Delta[i], i + 1])
 		})
 	})[, -1, drop = FALSE]
 	as.vector(apply(RandomProbability, 2, prod))
