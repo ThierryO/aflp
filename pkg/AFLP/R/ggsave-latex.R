@@ -17,7 +17,7 @@ ggsave.latex <- function(..., caption = NULL, label = NULL, figure.placement = "
 		if(is.null(args[["plot"]])){
 			names(args)[which(names(args) == "")[1]] <- "plot"
 		}
-		args[["filename"]] <- paste(args[["path"]], digest.ggplot(args[["plot"]]), ".pdf", sep="")
+		args[["filename"]] <- paste(args[["path"]], ggplot2::digest.ggplot(args[["plot"]]), ".pdf", sep="")
 	} else {
 		args[["filename"]] <- paste(args[["path"]], args[["filename"]], sep="")
 	}

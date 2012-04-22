@@ -72,7 +72,8 @@ clean <- function(data){
 	  Outliers[["Marker"]] <- dataset[NULL, c("PC", "Marker")]
 	  Outliers[["Marker"]]$Observed <- numeric(0)
 	}
-	Outliers[["Residuals"]] <- dataset[is.na(dataset$Fluorescence), c("PC", "Replicate", "Marker", "Observed")]
+	Outliers[["Residuals"]] <- dataset[is.na(dataset$Fluorescence), c("PC", "Replicate", "Marker")]
+	Outliers[["Residuals"]]$Observed <- rep(NA, nrow(Outliers[["Residuals"]]))
 	data <- addOutliers(data, AFLP.outlier(Specimen = Outliers[["Specimen"]], Replicate = Outliers[["Replicate"]], 
 		Marker = Outliers[["Marker"]], Residual = Outliers[["Residuals"]]))
   if(any(table(dataset$PC, dataset$Replicate, dataset$Marker) > 1)){

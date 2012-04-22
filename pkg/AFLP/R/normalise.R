@@ -44,7 +44,6 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	dataset$PC <- factor(dataset$PC)
 	dataset$Normalised <- NA
 	dataset$Score <- NA
-	nPlate <- min(colSums(cast(Plate ~ PC, data = dataset, value = "Fluorescence", fun = length)[, -1, drop = FALSE] > 0))
 	if(transformation == "logit"){
 		Power <- min(which(max(dataset$Fluorescence) ^ (1/seq_len(32)) <= 2))
 		formula <- paste("qlogis(Fluorescence/2^", Power, ") ~ 1", sep = "")
@@ -53,6 +52,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	} else {
 		formula <- "Fluorescence ~ 1"
 	}
+	nPlate <- min(colSums(table(dataset$Plate, dataset$PC) > 0))
 	if(nPlate > 5){
 		formula <- paste(formula, "+ (1|Plate)")
 	} else if(nPlate > 1){
@@ -74,8 +74,9 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		}
 	}
 	if(SpecimenEffect){
-		nSpecimen <- min(colSums(cast(Specimen ~ PC, data = dataset, value = "Fluorescence", fun = length)[, -1, drop = FALSE] > 0))
-		Replication <- mean(unlist(cast(Specimen ~ PC, data = unique(dataset[, c("Specimen", "Replicate", "PC")]), value = "Replicate", fun = length)[, -1, drop = TRUE]))
+	  nSpecimen <- min(colSums(table(dataset$Specimen, dataset$PC) > 0))
+    uni <- unique(dataset[, c("Specimen", "Replicate", "PC")])
+	  Replication <- mean(table(uni$Specimen, uni$PC))
 		if(Replication > 1.05){
 			if(Replication * nSpecimen > 5){
 				formula <- paste(formula, " + (1|Specimen/Replicate)")
@@ -97,7 +98,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			formula <- paste(formula, " + Replicate")
 		}
 	}
-	nMarker <- min(colSums(cast(Marker ~ PC, data = dataset, value = "Fluorescence", fun = length)[, -1, drop = FALSE] > 0))
+	nMarker <- min(colSums(table(dataset$Marker, dataset$PC) > 0))
 	if(nMarker > 5){
 		formula <- paste(formula, " + Marker + (1|fMarker)")
 	} else if(nMarker > 1){
@@ -130,7 +131,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			df$Outlier[with(df, Observed > min(Observed[Outlier == "Acceptable"]) & Observed < max(Observed[Outlier == "Acceptable"]))] <- "Acceptable"
 			if(output != "none"){
 				p <- 
-					ggplot(df, aes(x = Theoretical, y = Observed)) + geom_point(aes(colour = Outlier)) + geom_line(aes(y = fit)) + geom_line(aes(y = upr), linetype = 2) + geom_line(aes(y = lwr), linetype = 2)
+					ggplot(df, aes_string(x = "Theoretical", y = "Observed", ymin = "lwr", ymax = "upr")) + geom_ribbon(alpha = 0.1) + geom_line(aes_string(y = "fit")) + geom_point(aes_string(colour = "Outlier"))
 			}
 			Outlier <- df[df$Outlier != "Acceptable", c("Label", "Observed")]
 			if(output == "tex"){

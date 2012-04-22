@@ -30,6 +30,7 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \examples{
   data(Tilia)
+  str(Tilia)
   nOutput <- normalise(Tilia, output = "none")
   RemovingAllPossibleOutliers <- addOutliers(Tilia, nOutput$outliers)
   RemovingAllPossibleOutlieingReplicates <- addOutliers(Tilia, replicates(nOutput$outliers))

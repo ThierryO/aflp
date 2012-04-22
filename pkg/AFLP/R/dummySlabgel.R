@@ -19,7 +19,7 @@ dummySlabgel <- function(nSpecimen = 50, nGroup = 2, nMarker = 50,
 	dummy <- randomiseSlabgel(
 		nSpecimen, 
 		Group = sample(factor(LETTERS[seq_len(nGroup)]), nSpecimen, replace = TRUE), 
-		nReplicate = nReplicate)
+		nReplicates = nReplicate)
 	Marker <- sample(800, nMarker, replace = FALSE)
 	SpecimenEffect <- rmvnorm(length(levels(replicates(dummy)$Specimen)), sigma = VarCov[["Specimen"]])
 	ReplicateEffect <- rmvnorm(length(levels(replicates(dummy)$Replicate)), sigma = VarCov[["Replicate"]])
@@ -36,7 +36,7 @@ dummySlabgel <- function(nSpecimen = 50, nGroup = 2, nMarker = 50,
 		} else if(x$TypeMarker[1] == "Global"){
 			merge(x, data.frame(Specimen = unique(x$Specimen), Truth = rbinom(length(unique(x$Specimen)), size = 1, prob = rbeta(1, betaShape[1], betaShape[2]))))
 		} else{
-			ddply(x, .(Group), function(y){
+			ddply(x, "Group", function(y){
 				merge(y, data.frame(Specimen = unique(y$Specimen), Truth = rbinom(length(unique(y$Specimen)), size = 1, prob = rbeta(1, betaShape[1], betaShape[2]))))
 			})
 		}

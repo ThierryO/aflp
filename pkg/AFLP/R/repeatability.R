@@ -17,7 +17,8 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 	if(nrow(specimens(outliers(data))) > 0){
 		Repeated <- subset(merge(Repeated, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))[, c("Specimen", "Replicate", "Lane")]
 	}
-	Repeated2 <- cast(Specimen ~ ., data = Repeated, value = "Lane", fun.aggregate = length)
+  
+	Repeated2 <- dcast(as.formula("Specimen ~ ."), data = Repeated, value.var = "Lane", fun.aggregate = length)
 	Repeated <- subset(Repeated, Specimen %in% Repeated2$Specimen[Repeated2[, 2] > 1])
 	rawData <- fluorescence(data)
 	if(nrow(markers(outliers(data))) > 0){
@@ -30,8 +31,8 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 	Variances <- ddply(replicatedData, c("PC", "Marker", "Specimen"), function(z){
 		with(z, c(Raw = var(Raw, na.rm = TRUE), Normalised = var(Normalised, na.rm = TRUE)))
 	})
-	MarkerDeviance <- recast(PC + Marker ~ variable, data = Variances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), function(z){mean(z, na.rm = TRUE)})
-	SpecimenDeviance <- recast(PC + Specimen ~ variable, data = Variances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"), function(z){mean(z, na.rm = TRUE)})
+	MarkerDeviance <- recast(as.formula("PC + Marker ~ variable"), data = Variances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)})
+	SpecimenDeviance <- recast(as.formula("PC + Specimen ~ variable"), data = Variances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"),fun.aggregate = function(z){mean(z, na.rm = TRUE)})
 	if(bootstrap){
 		bootDeviance <- rlply(199, {
 			bootSample <- replicatedData
@@ -40,17 +41,17 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			bootVariances <- ddply(bootSample, c("PC", "Marker", "Specimen"), function(z){
 				with(z, c(Raw = var(Raw, na.rm = TRUE), Normalised = var(Normalised, na.rm = TRUE)))
 			})
-			list(Marker = recast(PC + Marker ~ variable, data = bootVariances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), function(z){mean(z, na.rm = TRUE)}),
-				Specimen= recast(PC + Specimen ~ variable, data = bootVariances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"), function(z){mean(z, na.rm = TRUE)}))
+			list(Marker = recast(as.formula("PC + Marker ~ variable"), data = bootVariances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)}),
+				Specimen= recast(as.formula("PC + Specimen ~ variable"), data = bootVariances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)}))
 		})
 	}
 	if(all(is.na(rawData$Normalised))){
 		if(bootstrap){
-			bootMarkerDeviance <- cast(PC + Marker ~ ., data = ldply(bootDeviance, function(x){x$Marker}), value = "Raw", quantile, prob = 0.95, type = 6)
+			bootMarkerDeviance <- dcast(as.formula("PC + Marker ~ ."), data = ldply(bootDeviance, function(x){x$Marker}), value.var = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
 			colnames(bootMarkerDeviance)[3] <- "Raw"
 			MarkerDeviance <- merge(MarkerDeviance, bootMarkerDeviance, by = c("PC", "Marker"), suffixes = c("", ".y"))
 			MarkerDeviance$Outlier <- factor(ifelse(with(MarkerDeviance, Raw > Raw.y), 1, 2), levels = 1:2, labels = c("Possible", "Acceptable"))
-			bootSpecimenDeviance <- cast(PC + Specimen ~ ., data = ldply(bootDeviance, function(x){x$Specimen}), value = "Raw", quantile, prob = 0.95, type = 6)
+			bootSpecimenDeviance <- dcast(as.formula("PC + Specimen ~ ."), data = ldply(bootDeviance, function(x){x$Specimen}), value = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
 			colnames(bootSpecimenDeviance)[2] <- "Raw"
 			SpecimenDeviance <- merge(SpecimenDeviance, bootSpecimenDeviance, by = c("PC", "Specimen"), suffixes = c("", ".y"))
 			SpecimenDeviance$Outlier <- factor(ifelse(with(SpecimenDeviance, Raw > Raw.y), 1, 2), levels = 1:2, labels = c("Possible", "Acceptable"))
@@ -281,11 +282,11 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			print(qcSpecimen)
 			d_ply(qcSpecimenInd, .(PC, Specimen), function(Z){
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], ", Specimen: ", levels(Z$Specimen)[Z$Specimen[1]], "\r\n", sep = "")
-				print(cast(ReplicateA ~ ReplicateB, data = Z, value = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
+				print(cast(as.formula("ReplicateA ~ ReplicateB"), data = Z, value.var = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
-			d_ply(qcPlate, .(PC), function(Z){
+			d_ply(qcPlate, "PC", function(Z){
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], "\r\n", sep = "")
-				print(cast(PlateA ~ PlateB, data = Z, value = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
+				print(dcast(formula = PlateA ~ PlateB, data = Z, value.var = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
 		}
 	}

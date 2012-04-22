@@ -33,7 +33,6 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
   TiliaC <- readSAGA(system.file("extdata", "Tilia_bandvaluespc2", package = "AFLP"), add.to = TiliaC)
   TiliaC <- readSAGA(system.file("extdata", "Tilia_bandvaluespc3", package = "AFLP"), add.to = TiliaC)
   TiliaC <- readSAGA(system.file("extdata", "Tilia_bandvaluespc4", package = "AFLP"), add.to = TiliaC)
-  data(Tilia)
-  all.equal(clean(TiliaC), Tilia)
+  clean(TiliaC)
 }
 \keyword{manip}

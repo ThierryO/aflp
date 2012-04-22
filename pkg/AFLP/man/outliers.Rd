@@ -16,7 +16,7 @@ outliers(x)
 }
 }
 \value{
-An object of the AFLP.outlier class with the outlier from the AFLP object
+An object of the AFLP.outlier class with the outliers from the AFLP object
 }
 \author{
 Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
@@ -25,7 +25,7 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{AFLP-class}}, \code{\link{AFLP.outlier-class}}
 }
 \examples{
-	#data(willowN)
-	#outliers(willowN)
+	data(Tilia)
+	outliers(Tilia)
 }
 \keyword{attribute}
