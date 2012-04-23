@@ -1,5 +1,4 @@
 normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, device = "pdf", SpecimenEffect = FALSE, level = 0.99, transformation = c("log", "logit", "none")){
-print("A")
   output <- match.arg(output)
 	transformation <- match.arg(transformation)
 	if(output != "none"){
@@ -13,22 +12,18 @@ print("A")
 		}
 	}
 	ExtraCols <- colnames(fluorescence(data))
-print("B")
   ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
 	dataset <- merge(replicates(data), fluorescence(data))
-print("C")
 	if(nrow(replicates(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(replicates(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL
 		dataset$Observed <- NULL
 	}
-print("D")
 	if(nrow(specimens(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL
 		dataset$Observed <- NULL
 	}
-print("E")
 	if(nrow(markers(outliers(data))) > 0){
 		dataset <- subset(merge(dataset, cbind(markers(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
 		dataset$remove <- NULL
@@ -36,8 +31,11 @@ print("E")
 	}
 print("F")
 	if(nrow(residuals(outliers(data))) > 0){
+print("A")
 		dataset <- subset(merge(dataset, cbind(residuals(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
-		dataset$remove <- NULL
+print("A")
+    dataset$remove <- NULL
+print("B")
 		dataset$Observed <- NULL
 	}
 print("H")
