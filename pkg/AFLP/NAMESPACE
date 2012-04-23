@@ -1,3 +1,2 @@
-importFrom(stats, hclust, princomp)
-importFrom(stats, residuals, resid) #importing these from stats yield problems.
+importFrom(stats, hclust, princomp, residuals, resid)
 exportPattern(".")

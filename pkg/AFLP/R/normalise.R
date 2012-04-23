@@ -30,12 +30,12 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		dataset$Observed <- NULL
 	}
 print("F")
-print(str(outliers(data)))
-  print("Z")
-print(str(residuals(outliers(data))))
-  print("Y")
+print(outliers(data))
+print("Z")
+print(residuals(outliers(data)))
+print("Y")
 print(nrow(residuals(outliers(data))))
-  prtin("X")
+print("X")
 	if(nrow(residuals(outliers(data))) > 0){
 print("A")
 		dataset <- subset(merge(dataset, cbind(residuals(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
