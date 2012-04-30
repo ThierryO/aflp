@@ -19,7 +19,7 @@ readABI(filename, add.to)
 }
 }
 \value{
-	Return an AFLP object with the fluorescence data appended to it. Make sure to use the
+	An AFLP object with the fluorescence data appended to it. Make sure to use the
 	\code{\link{defineBins}} function prior to normalise to data.}
 \author{
 Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert

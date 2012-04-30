@@ -32,7 +32,25 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{QC}}
 }
 \examples{
-#data(willowN)
-#border(willowN, pc = "5", marker = 503) <- Inf
+  data(Tilia)
+  tmp <- replicates(Tilia)
+  QC(Tilia, which = "all") <- list(
+    Specimen = data.frame(
+      Specimen = tmp$Specimen[grep("QC", tmp$Specimen)], 
+      Type = "method"
+    ),
+    Replicate = data.frame(
+      Replicate = tmp$Replicate[grep("qc", tmp$Replicate)], 
+      Type = "method"
+    )
+  )
+  QC(Tilia, which = "specimen") <- data.frame(
+    Specimen = tmp$Specimen[grep("QC", tmp$Specimen)], 
+    Type = "method"
+  )
+  QC(Tilia, which = "replicate") <- data.frame(
+    Replicate = tmp$Replicate[grep("qc", tmp$Replicate)], 
+    Type = "method"
+  )
 }
 \keyword{manip}

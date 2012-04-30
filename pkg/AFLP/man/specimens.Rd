@@ -25,9 +25,8 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{specimens-methods}},\code{\link{AFLP-class}},\code{\link{AFLP.outlier-class}}
 }
 \examples{
-	#data(willow)
-	#specimens(willow)
-	#data(willowN)
-	#specimens(outliers(willowN))
+	data(Tilia)
+	specimens(Tilia)
+	specimens(outliers(Tilia))
 }
 \keyword{attribute}

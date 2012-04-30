@@ -28,9 +28,8 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link[base]{rbind}}
 }
 \examples{
-#	data(willow)
-#	data(willowN)
-#	rbind.AFLP.outlier(outliers(willow), outliers(willowN))
+  data(Tilia)
+  extraOutliers <- rbind.AFLP.outlier(outliers(Tilia), outliers(Tilia))
 }
 \keyword{utilities}
 \keyword{methods}

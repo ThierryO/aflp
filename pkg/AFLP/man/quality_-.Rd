@@ -32,7 +32,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{quality}}
 }
 \examples{
-#data(willowN)
-#border(willowN, pc = "5", marker = 503) <- Inf
+  data(Tilia)
+  qc <- quality(Tilia)
+  qc$Global$Score <- NA
+  quality(Tilia) <- qc
 }
 \keyword{manip}

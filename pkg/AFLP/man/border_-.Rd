@@ -35,7 +35,7 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{border}}
 }
 \examples{
-#data(willowN)
-#border(willowN, pc = "5", marker = 503) <- Inf
+  data(Tilia)
+  border(Tilia, pc = "PC1", marker = 116) <- Inf
 }
 \keyword{manip}

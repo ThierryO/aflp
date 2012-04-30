@@ -19,7 +19,10 @@ automated classification might yield some unwanted artifacts. Correct them with
 the \code{link{border<-}} function.
 }
 \usage{
-classify(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE)
+classify(data, output = c("screen", "none", "tex"), 
+  maxBorder = 1, tresholdPeakRatio = 0.03, 
+  tresholdMonomorph = 0, device = "pdf", path = NULL, nrows = 4, 
+  ncols = 4, keep.border = FALSE)
 }
 \arguments{
   \item{data}{
@@ -76,7 +79,6 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \examples{
   data(Tilia)
-  Tilia <- normalise(Tilia, output = "none")$data
   Tilia <- classify(Tilia, output = "none")
 }
 \keyword{manip}

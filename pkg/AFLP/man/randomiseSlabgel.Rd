@@ -18,7 +18,8 @@ Any left-over lanes on a plate are filled with additional replications of specim
 been replicated.
 }
 \usage{
-randomiseSlabgel(Specimens, Group = NULL, nReplicates = 3, nQC = 0, nLanes = 64)
+randomiseSlabgel(Specimens, Group = NULL, nReplicates = 3, 
+  nQC = 0, nLanes = 64)
 }
 \arguments{
   \item{Specimens}{

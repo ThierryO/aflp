@@ -12,7 +12,8 @@ The peaks are aggregated into bins according to the algoritme described by Arrig
 \cite{Arrigo2009}.
 }
 \usage{
-defineBins(dataset, minPeakHeight, minBinWidth = 1, maxBinWidth = 5, missingPeakRatio = 0.8)
+defineBins(dataset, minPeakHeight, minBinWidth = 1, 
+  maxBinWidth = 5, missingPeakRatio = 0.8)
 }
 \arguments{
   \item{dataset}{
@@ -50,9 +51,5 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 		genetic variation using RawGeno, an R package for automating AFLP scoring.
 		BMC Bioinformatics, 10:33, 10.1186/1471-2105-10-33,
 		\url{http://www.biomedcentral.com/1471-2105/10/33}
-}
-\examples{
-#	data(willow)
-#	clean(willow)
 }
 \keyword{manip}

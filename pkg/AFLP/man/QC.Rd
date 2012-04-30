@@ -31,7 +31,7 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{QC-method}}
 }
 \examples{
-	#data(willowN)
-	#border(willowN)
+	data(Tilia)
+	QC(Tilia)
 }
 \keyword{attribute}

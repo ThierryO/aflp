@@ -32,7 +32,8 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
   data(Tilia)
   nOutput <- normalise(Tilia, output = "none")
   RemovingAllPossibleOutliers <- addOutliers(Tilia, nOutput$outliers)
-  RemovingAllPossibleOutlieingReplicates <- addOutliers(Tilia, replicates(nOutput$outliers))
+  RemovingAllPossibleOutlieingReplicates <- 
+    addOutliers(Tilia, replicates(nOutput$outliers))
 }
 \keyword{attribute}
 

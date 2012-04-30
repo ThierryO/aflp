@@ -10,7 +10,8 @@ Append fluorescence data from a SAGA file to an AFLP object.
 NOTE: the SAGA file must be in the default CSV format.
 }
 \usage{
-readSAGA(filename, add.to, maxMissing = 0.25, textclean = function(x){x})
+readSAGA(filename, add.to, maxMissing = 0.25, 
+  textclean = function(x){x})
 }
 \arguments{
   \item{filename}{
@@ -42,9 +43,21 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \examples{
   data(TiliaDesign)
   Tilia <- as.AFLP(TiliaDesign)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc1", package = "AFLP"), add.to = Tilia)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc2", package = "AFLP"), add.to = Tilia)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc3", package = "AFLP"), add.to = Tilia)
-  Tilia <- readSAGA(system.file("extdata", "Tilia_bandvaluespc4", package = "AFLP"), add.to = Tilia)
+  Tilia <- readSAGA(
+    system.file("extdata", "Tilia_bandvaluespc1", package = "AFLP"), 
+    add.to = Tilia
+  )
+  Tilia <- readSAGA(
+    system.file("extdata", "Tilia_bandvaluespc2", package = "AFLP"), 
+    add.to = Tilia
+  )
+  Tilia <- readSAGA(
+    system.file("extdata", "Tilia_bandvaluespc3", package = "AFLP"), 
+    add.to = Tilia
+  )
+  Tilia <- readSAGA(
+    system.file("extdata", "Tilia_bandvaluespc4", package = "AFLP"), 
+    add.to = Tilia
+  )
 }
 \keyword{manip}

@@ -8,7 +8,9 @@
 	Saves a ggplot graphic to a file and creates the code to include it in a LaTeX document.
 }
 \usage{
-	ggsave.latex (..., caption = NULL, label = NULL, figure.placement = "hbt", floating = TRUE, caption.placement="bottom", latex.environments="center")
+	ggsave.latex (..., caption = NULL, label = NULL, 
+    figure.placement = "hbt", floating = TRUE, 
+    caption.placement = "bottom", latex.environments = "center")
 }
 \arguments{
 \item{...}{
@@ -43,10 +45,11 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link[ggplot2]{ggsave}}
 }
 \examples{
-	data(Tilia)
-	library(ggplot2)
-	p <- ggplot(fluorescence(Tilia), aes(x = Fluorescence)) + geom_density() + scale_x_log10()
-	ggsave.latex(p, filename = "test.pdf")
+	require(ggplot2)
+  data(cars)
+	p <- ggplot(cars, aes(x = speed, y = dist)) + geom_point()
+	ggsave.latex(p, filename = "test.pdf", label = "fig:Cars", 
+    caption = "A demo plot", height = 5, width = 4)
 }
 \keyword{hplot}
 \keyword{graphs}

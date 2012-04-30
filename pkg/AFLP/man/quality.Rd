@@ -8,7 +8,11 @@ Extracts the quality data of an AFLP object
 Extracts the quality of an AFLP object
 }
 \usage{
-quality(x, which = c("all", "marker", "specimen", "replicate", "plate", "primercombination", "global"))
+quality(x, 
+  which = c(
+    "all", "marker", "specimen", "replicate", "plate", 
+    "primercombination", "global"
+  ))
 }
 \arguments{
   \item{x}{
@@ -30,7 +34,13 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{quality-method}}
 }
 \examples{
-	#data(willowN)
-	#border(willowN)
+  data(Tilia)
+  qc <- quality(Tilia)
+  qcm <- quality(Tilia, "marker")
+  qcs <- quality(Tilia, "specimen")
+  qcr <- quality(Tilia, "replicate")
+  qcp <- quality(Tilia, "plate")
+  qcpc <- quality(Tilia, "primercombination")
+  qcg <- quality(Tilia, "global")
 }
 \keyword{attribute}

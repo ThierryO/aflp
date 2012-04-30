@@ -1,4 +1,12 @@
 randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE){
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  Capilar <- Line <- Plate <- Replicate <- Specimen <- NULL
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  
 	if(is.numeric(Specimens)){
 		Specimens <- seq_len(Specimens)
 	}
@@ -67,7 +75,7 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
 			) ^ 10
 		#add replicate within plate and capilar
-		Remain <- subset(cast(Plate + Capilar ~ ., data = Design, subset = is.na(Specimen), value = "Prob", fun = c(length, mean)), length >= 2)
+		Remain <- subset(cast(Plate + Capilar ~ ., data = Design, subset = is.na(Specimen), value = "Prob", fun.aggregate = c(length, mean)), length >= 2)
 		i <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:2]
 		lines <- sample(subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar == i$Capilar)$Line, 2)
 		Design$Specimen[with(Design, Plate == i$Plate & Capilar == i$Capilar & Line %in% lines)] <- Specimens[1]

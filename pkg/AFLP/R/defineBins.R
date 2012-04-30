@@ -1,5 +1,13 @@
 defineBins <- function(dataset, minPeakHeight, minBinWidth = 1, maxBinWidth = 5, missingPeakRatio = 0.8){
-	if(missing(minPeakHeight)){
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  Bin <- Noise <- PC <- Replicate <- Specimen <- NULL
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  
+  if(missing(minPeakHeight)){
 		fluorescence(dataset)$Noise <- 0
 	} else {
 		fluorescence(dataset)$Noise <- minPeakHeight
@@ -28,7 +36,7 @@ defineBins <- function(dataset, minPeakHeight, minBinWidth = 1, maxBinWidth = 5,
 			noSplit <- c(noSplit, levels(extraBreaks$Bin)[extraBreaks$Bin[is.na(extraBreaks$newBorder)]])
 			Fluorescence$Bin <- cut(Fluorescence$Marker, breaks = Breaks, dig.lab = 7)
 			BinWidth <- diff(Breaks)
-			MultiplePeaks <- apply(cast(Bin ~ Replicate, value = "Marker", data = Fluorescence, fun = length, subset = Fluorescence >= Noise), 1, max) > 1
+			MultiplePeaks <- apply(cast(Bin ~ Replicate, value = "Marker", data = Fluorescence, fun.aggregate = length, subset = Fluorescence >= Noise), 1, max) > 1
 			toSplit <- levels(Fluorescence$Bin)[(MultiplePeaks & BinWidth > minBinWidth) | (BinWidth > maxBinWidth)]
 			toSplit <- toSplit[!(toSplit %in% noSplit)]
 		}

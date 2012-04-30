@@ -26,9 +26,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{replicates-method}}, \code{\link{AFLP-class}}, \code{\link{AFLP.outlier-class}}
 }
 \examples{
-	#data(willowN)
-	#replicates(willowN)
-	#replicates(outliers(willowN))
+	data(Tilia)
+	replicates(Tilia)
+	replicates(outliers(Tilia))
 }
 \keyword{attribute}
 

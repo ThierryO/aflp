@@ -21,7 +21,9 @@ more or less random) to 1 (perfect repeatability).
 The calculation of both indicator is described in the Details section.
 }
 \usage{
-repeatability(data, output = c("screen", "tex", "none"), bootstrap = FALSE, minMarker = NULL, path = NULL, device = "pdf")
+repeatability(data, output = c("screen", "tex", "none"), 
+  bootstrap = FALSE, minMarker = NULL, path = NULL, 
+  device = "pdf")
 }
 \arguments{
   \item{data}{
@@ -98,7 +100,7 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{normalise}}, \code{\link{classify}}, \code{\link[ggplot2]{ggsave}}
 }
 \examples{
-	#data(willowN)
-	#repeatability(willowN)
+	data(Tilia)
+	output <- repeatability(Tilia, output = "none")
 }
 \keyword{attribute}

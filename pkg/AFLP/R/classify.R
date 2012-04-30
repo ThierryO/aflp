@@ -1,5 +1,13 @@
 classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE){
-	output <- match.arg(output)
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  Border <- Normalised <- Specimen <- NULL
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  
+  output <- match.arg(output)
 	if(output != "none"){
 		if(!require(ggplot2)){
 			stop("The ggplot2 package is required")
@@ -24,7 +32,7 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 	if(nrow(specimens(outliers(data))) > 0){
 		Repeated <- subset(merge(Repeated, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))[, c("Specimen", "Replicate", "Lane")]
 	}
-	Repeated2 <- cast(Specimen ~ ., data = Repeated, value = "Lane", fun = length)
+	Repeated2 <- cast(Specimen ~ ., data = Repeated, value = "Lane", fun.aggregate = length)
 	Repeated <- subset(Repeated, Specimen %in% Repeated2$Specimen[Repeated2[, 2] > 1])
 	
 	ExtraCols <- colnames(fluorescence(data))

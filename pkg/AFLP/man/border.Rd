@@ -33,8 +33,6 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \examples{
   data(Tilia)
-  output <- normalise(Tilia, output = "none")$data
-  output <- classify(output, output = "none")
-  BorderList <- border(output)
+  BorderList <- border(Tilia)
 }
 \keyword{attribute}

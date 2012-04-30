@@ -11,8 +11,9 @@ specimens per plate.
 
 }
 \usage{
-randomiseCapilar(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, 
-	nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE)
+randomiseCapilar(Specimens, Group, FirstLabID = 1, Prefix = "", 
+  nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, 
+  minReplicates = 8, fillPlate = FALSE)
 }
 \arguments{
   \item{Specimens}{
@@ -67,9 +68,15 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 	randomiseCapilar(100)
 
 	#example with quality control samples
-	QCsamples <- data.frame(Capilar = c("E", "F"), Line = c(5, 5), ID = c("BL", "QCmethod"), Type = c("Blanco","QC"))
+	QCsamples <- data.frame(
+    Capilar = c("E", "F"), 
+    Line = c(5, 5), 
+    ID = c("BL", "QCmethod"), 
+    Type = c("Blanco","QC")
+  )
 	nSpecimens <- 180
 	Group <- sample(10, nSpecimens, replace = TRUE)
-	randomiseCapilar(nSpecimens, Group, FirstLabID = 626, Prefix = "C/11/", QC = QCsamples)
+	randomiseCapilar(nSpecimens, Group, 
+    FirstLabID = 626, Prefix = "C/11/", QC = QCsamples)
 }
 \keyword{design}

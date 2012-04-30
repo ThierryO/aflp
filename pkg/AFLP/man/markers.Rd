@@ -23,7 +23,6 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 }
 \examples{
   data(Tilia)
-  oTilia <- normalise(Tilia, output = "none")$outliers
   mTilia <- markers(outliers(Tilia))
 }
 \keyword{attributes}

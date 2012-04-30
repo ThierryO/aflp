@@ -12,7 +12,9 @@ number of replicates, specimens, plates and marker. The same form is apply on
 each primer combination separately.
 }
 \usage{
-normalise(data, output = c("screen", "tex", "none"), path = NULL, device = "pdf", SpecimenEffect = FALSE, level = 0.99, transformation = c("log", "logit", "none"))
+normalise(data, output = c("screen", "tex", "none"), path = NULL, 
+  device = "pdf", SpecimenEffect = FALSE, level = 0.99, 
+  transformation = c("log", "logit", "none"))
 }
 \arguments{
   \item{data}{

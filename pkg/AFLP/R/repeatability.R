@@ -1,5 +1,12 @@
 repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap = FALSE, minMarker = NULL, path = NULL, device = "pdf"){
-	output <- match.arg(output)
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  Freq <- Marker <- Normalised <- Outlier <- PC <- Plate <- PlateA <- PlateB <- Raw <- Replicate <- Score <- Specimen <- SpecimenPlate <- NULL
+  # #####################
+  # Fooling R CMD check #
+  #######################
+  output <- match.arg(output)
 	if(output != "none"){
 		if(!require(ggplot2)){
 			stop("The ggplot2 package is required to create the graphics.")
@@ -18,7 +25,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		Repeated <- subset(merge(Repeated, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))[, c("Specimen", "Replicate", "Lane")]
 	}
   
-	Repeated2 <- cast(as.formula("Specimen ~ ."), data = Repeated, value.var = "Lane", fun.aggregate = length)
+	Repeated2 <- cast(Specimen ~ ., data = Repeated, value = "Lane", fun.aggregate = length)
 	Repeated <- subset(Repeated, Specimen %in% Repeated2$Specimen[Repeated2[, 2] > 1])
 	rawData <- fluorescence(data)
 	if(nrow(markers(outliers(data))) > 0){
@@ -31,8 +38,8 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 	Variances <- ddply(replicatedData, c("PC", "Marker", "Specimen"), function(z){
 		with(z, c(Raw = var(Raw, na.rm = TRUE), Normalised = var(Normalised, na.rm = TRUE)))
 	})
-	MarkerDeviance <- recast(as.formula("PC + Marker ~ variable"), data = Variances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)})
-	SpecimenDeviance <- recast(as.formula("PC + Specimen ~ variable"), data = Variances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"),fun.aggregate = function(z){mean(z, na.rm = TRUE)})
+	MarkerDeviance <- recast(PC + Marker ~ variable, data = Variances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)})
+	SpecimenDeviance <- recast(PC + Specimen ~ variable, data = Variances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"),fun.aggregate = function(z){mean(z, na.rm = TRUE)})
 	if(bootstrap){
 		bootDeviance <- rlply(199, {
 			bootSample <- replicatedData
@@ -41,17 +48,17 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			bootVariances <- ddply(bootSample, c("PC", "Marker", "Specimen"), function(z){
 				with(z, c(Raw = var(Raw, na.rm = TRUE), Normalised = var(Normalised, na.rm = TRUE)))
 			})
-			list(Marker = recast(as.formula("PC + Marker ~ variable"), data = bootVariances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)}),
-				Specimen= recast(as.formula("PC + Specimen ~ variable"), data = bootVariances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)}))
+			list(Marker = recast(PC + Marker ~ variable, data = bootVariances, id.var = c("PC", "Marker"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)}),
+				Specimen= recast(PC + Specimen ~ variable, data = bootVariances, id.var = c("PC", "Specimen"), measure.var = c("Raw", "Normalised"), fun.aggregate = function(z){mean(z, na.rm = TRUE)}))
 		})
 	}
 	if(all(is.na(rawData$Normalised))){
 		if(bootstrap){
-			bootMarkerDeviance <- cast(as.formula("PC + Marker ~ ."), data = ldply(bootDeviance, function(x){x$Marker}), value.var = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
+			bootMarkerDeviance <- cast(PC + Marker ~ ., data = ldply(bootDeviance, function(x){x$Marker}), value.var = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
 			colnames(bootMarkerDeviance)[3] <- "Raw"
 			MarkerDeviance <- merge(MarkerDeviance, bootMarkerDeviance, by = c("PC", "Marker"), suffixes = c("", ".y"))
 			MarkerDeviance$Outlier <- factor(ifelse(with(MarkerDeviance, Raw > Raw.y), 1, 2), levels = 1:2, labels = c("Possible", "Acceptable"))
-			bootSpecimenDeviance <- cast(as.formula("PC + Specimen ~ ."), data = ldply(bootDeviance, function(x){x$Specimen}), value = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
+			bootSpecimenDeviance <- cast(PC + Specimen ~ ., data = ldply(bootDeviance, function(x){x$Specimen}), value = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
 			colnames(bootSpecimenDeviance)[2] <- "Raw"
 			SpecimenDeviance <- merge(SpecimenDeviance, bootSpecimenDeviance, by = c("PC", "Specimen"), suffixes = c("", ".y"))
 			SpecimenDeviance$Outlier <- factor(ifelse(with(SpecimenDeviance, Raw > Raw.y), 1, 2), levels = 1:2, labels = c("Possible", "Acceptable"))

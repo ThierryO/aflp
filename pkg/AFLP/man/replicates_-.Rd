@@ -28,7 +28,9 @@ Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
 \code{\link{replicate}}
 }
 \examples{
-#data(willowN)
-#border(willowN, pc = "5", marker = 503) <- Inf
+  data(Tilia)
+  tmp <- replicates(Tilia)
+  tmp$Plate[1] <- "8"
+  replicates(Tilia) <- tmp
 }
 \keyword{manip}
