@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{natbib}
 \usepackage{graphics}
@@ -7,6 +7,8 @@
 \usepackage{hanging}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{placeins}
 
 % \VignetteIndexEntry{Introduction to the AFLP package}
 % \VignetteDepends{methods, lme4, reshape, plyr, ggplot2, vegan, xtable, mvtnorm}
@@ -34,7 +36,7 @@ foo <- packageDescription("AFLP")
 
 \author{Thierry Onkelinx}
 \maketitle
-\section{Terminology}
+\chapter{Terminology}
 \begin{description}
   \item[specimen] the sample as recieved in the lab. Each sample requires a unique code. It will be divided into one or more replicates. Specimens with multiple replicates will be used to asses the repeatability.
   \item[group] the a priori clustering of specimens e.g. per location, per species, \ldots
@@ -49,9 +51,9 @@ foo <- packageDescription("AFLP")
   \item[repeatability]
 \end{description}
 
-\section{Reading in data}
+\chapter{Reading in data}
 
-\subsection{The design}
+\section{The design}
 First we must define the design: the position of each replicate on the plates, the link between replicate and specimen. The \textit{Group} column is optional and only relevant if some a priori clustering is assumed. The grouping in the Tilia dataset is the field determination of the species (see \S\ref{S:Tilia}). All columns, exect \textit{Group}, present in the TiliaDesign \texttt{data.frame} are mandatory. Extra columns will be appended to the AFLP object, but ignored during analysis.
 
 When the data.frame is proper formatted, you can transform it into an \texttt{AFLP} object using the \textbf{as.AFLP} function. All mandatory columns will be converted to factors.
@@ -63,7 +65,7 @@ summary(TiliaDesign)
 Tilia <- as.AFLP(TiliaDesign)
 @
 
-\subsection{The fluorescence data}
+\section{The fluorescence data}
 
 In the example the AFLP analysis was run on a LiCor slabgel and the fluorescence was measured using SAGA software. It is easy to add the text file output from SAGA to an \texttt{AFLP} object using the \textbf{readSAGA} function. Be carefull with the names of the replicates. The names in SAGA file and the \texttt{AFLP} object must be indentical. Keep in mind that the replicate names are read as header by \textbf{readSAGA} and thus all rules for the names of \texttt{data.frame} apply. We recommend to start names of replicates with a letter and to use only letters, numbers and points. Please note that \R is case-sensitive. The \textit{textclean} argument can be used to pass a user-defined function to do some cleaning on the replicate names.
 
@@ -82,8 +84,8 @@ fluorescence(Tilia) <- Your.data.frame
 @
 
 
-\section{Normalising the raw fluorescence}
-Prior to the normalisation you should use the \textbf{clean} function. This will do some sanity checking on the \texttt{AFLP} object. Especially on missing data.
+\chapter{Normalising the raw fluorescence}
+Prior to the normalisation you should use the \textbf{clean} function. This will do some sanity checking on the \texttt{AFLP} object, especially on missing data.
 
 <<unclean display, eval = FALSE>>=
 #will not run
@@ -100,19 +102,64 @@ Tilia <- clean(Tilia)
 output <- normalise(Tilia, output = "none")
 @
 
+The normalisation estimates the effects of replicate, plate, lane, capilar and marker on the average fluorescence. The algorithm selects the appropriate combination of effects based on the design and the number of markers. The user has to decide which transformation to use.
 
-\section{Classifying the (normalised) fluorescence}
+<<normalise display, eval = FALSE>>=
+output <- normalise(Tilia, output = "tex", device = "png")
+@
 
-\section{Estimating repeatability}
+<<normalise run, echo = FALSE, results = tex>>=
+output <- normalise(Tilia, output = "tex", device = "png")
+@
 
 
-\subsection{Generating a design with replication}
+<<remove outliers from replicates>>=
+repOutliers <- replicates(output$outliers)
+toRemove <- head(subset(repOutliers, PC == "PC1"), 3)
+replicates(outliers(Tilia))
+Tilia <- addOutliers(Tilia, repOutliers)
+replicates(outliers(Tilia))
+@
 
-\section{Further analysis}
+<<normalise display 2, eval = FALSE>>=
+output <- normalise(Tilia, output = "tex", device = "png")
+@
+
+<<normalise run 2, echo = FALSE, results = tex>>=
+output <- normalise(Tilia, output = "tex", device = "png")
+@
+
+\chapter{Classifying the (normalised) fluorescence}
+
+<<classify display, eval = FALSE>>=
+Tilia <- output$data
+Tilia <- classify(Tilia, output = "tex", device = "png")
+@
+
+<<classify run, echo = FALSE, results = tex>>=
+Tilia <- output$data
+Tilia <- classify(Tilia, output = "tex", device = "png")
+@
+
+
+\chapter{Estimating repeatability}
+
+<<repeat display, eval = FALSE>>=
+output <- repeatability(Tilia, output = "tex", device = "png")
+@
+
+<<repeat run , echo = FALSE, results = tex>>=
+output <- repeatability(Tilia, output = "tex", device = "png")
+@
+
+
+\section{Generating a design with replication}
+
+\chapter{Further analysis}
 
 \appendix
 
-\section{Tilia dataset}
+\chapter{Tilia dataset}
 \label{S:Tilia}
 The Tilia dataset is a collection of leaf samples from 489 specimens of lime trees collected in Belgium. Field specialists determined the species of each tree and classified the specimens as belonging to \textit{Tilia cordata}, \textit{Tilia platyphylos} or their hybrid \textit{Tilia europea (x)}. Some specimens were not classified in the field (table~\ref{tab:TiliaN}). The research goal was to see whether the field determination matches with the genetical information.
 
