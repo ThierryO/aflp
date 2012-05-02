@@ -1,0 +1,134 @@
+\documentclass{article}
+
+\usepackage{natbib}
+\usepackage{graphics}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{hanging}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+
+% \VignetteIndexEntry{Introduction to the AFLP package}
+% \VignetteDepends{methods, lme4, reshape, plyr, ggplot2, vegan, xtable, mvtnorm}
+% \VignetteKeyword{AFLP}
+% \VignetteKeyword{genetics}
+
+\newcommand{\R}{{\normalfont\textsf{R }}{}}
+\newcommand{\NA}{{\normalfont\textsf{NA }}{}}
+
+\DeclareGraphicsExtensions{.png,.pdf,.jpg}
+
+\begin{document}
+
+\SweaveOpts{png = TRUE}
+\SweaveOpts{resolution = 100}
+\SweaveOpts{keep.source = TRUE}
+
+<<foo,include=FALSE,echo=FALSE>>=
+library(AFLP)
+options(width = 60)
+foo <- packageDescription("AFLP")
+@
+
+\title{Introduction to the '\texttt{AFLP}' package\\(version \Sexpr{foo$Version})}
+
+\author{Thierry Onkelinx}
+\maketitle
+\section{Terminology}
+\begin{description}
+  \item[specimen] the sample as recieved in the lab. Each sample requires a unique code. It will be divided into one or more replicates. Specimens with multiple replicates will be used to asses the repeatability.
+  \item[group] the a priori clustering of specimens e.g. per location, per species, \ldots
+  \item[replicate] a subsample of a specimen. The DNA extraction, PCR reaction and fluorescence measurement are done at this level. Thus replicates are unique.
+  \item[plate] a batch of replicates with simultaneous PCR reaction. Each cell in a plate is referenced by a lane and a capilar
+  \item[capilar] label of the capilar. The number of capilars depend on the lab equiment. E.g. an ABI 3500 uses 8 capilars, a LiCor slabgel is regarded as one capilar.
+  \item[lane] on a LiCor slabgel: the position of the replicates. On a capilar system: the number of the run within the plate.
+  \item[fluorescence]
+  \item[marker]
+  \item[normalisation]
+  \item[classification]
+  \item[repeatability]
+\end{description}
+
+\section{Reading in data}
+
+\subsection{The design}
+First we must define the design: the position of each replicate on the plates, the link between replicate and specimen. The \textit{Group} column is optional and only relevant if some a priori clustering is assumed. The grouping in the Tilia dataset is the field determination of the species (see \S\ref{S:Tilia}). All columns, exect \textit{Group}, present in the TiliaDesign \texttt{data.frame} are mandatory. Extra columns will be appended to the AFLP object, but ignored during analysis.
+
+When the data.frame is proper formatted, you can transform it into an \texttt{AFLP} object using the \textbf{as.AFLP} function. All mandatory columns will be converted to factors.
+
+<<reading data>>=
+data(TiliaDesign)
+str(TiliaDesign)
+summary(TiliaDesign)
+Tilia <- as.AFLP(TiliaDesign)
+@
+
+\subsection{The fluorescence data}
+
+In the example the AFLP analysis was run on a LiCor slabgel and the fluorescence was measured using SAGA software. It is easy to add the text file output from SAGA to an \texttt{AFLP} object using the \textbf{readSAGA} function. Be carefull with the names of the replicates. The names in SAGA file and the \texttt{AFLP} object must be indentical. Keep in mind that the replicate names are read as header by \textbf{readSAGA} and thus all rules for the names of \texttt{data.frame} apply. We recommend to start names of replicates with a letter and to use only letters, numbers and points. Please note that \R is case-sensitive. The \textit{textclean} argument can be used to pass a user-defined function to do some cleaning on the replicate names.
+
+<<adding fluorescence data from SAGA>>=
+Tilia <- readSAGA(
+  system.file("extdata", "Tilia_bandvaluespc1", package = "AFLP"), 
+  add.to = Tilia)
+str(fluorescence(Tilia))
+summary(fluorescence(Tilia))
+@
+
+The fluorescence can be added manually as well. In this case you need to prepare a \texttt{data.frame} with 6 columns: \textit{PC} (a factor indicating the primer combination), \textit{Replicate} (a factor with the replicate ID), \textit{Fluorescence} (the measured fluorescence), \textit{Marker} (the size of the marker in basepairs), \textit{Normalised} (NA, will hold the normalised fluorescence) and \textit{Score} (NA, will hold the classification).
+
+<<eval = FALSE>>=
+fluorescence(Tilia) <- Your.data.frame
+@
+
+
+\section{Normalising the raw fluorescence}
+Prior to the normalisation you should use the \textbf{clean} function. This will do some sanity checking on the \texttt{AFLP} object. Especially on missing data.
+
+<<unclean display, eval = FALSE>>=
+#will not run
+output <- normalise(Tilia, output = "none")
+@
+
+<<unclean display, echo = FALSE>>=
+output <- try(normalise(Tilia, output = "none"), silent = TRUE)
+cat(output[1])
+@
+
+<<clean run>>=
+Tilia <- clean(Tilia)
+output <- normalise(Tilia, output = "none")
+@
+
+
+\section{Classifying the (normalised) fluorescence}
+
+\section{Estimating repeatability}
+
+
+\subsection{Generating a design with replication}
+
+\section{Further analysis}
+
+\appendix
+
+\section{Tilia dataset}
+\label{S:Tilia}
+The Tilia dataset is a collection of leaf samples from 489 specimens of lime trees collected in Belgium. Field specialists determined the species of each tree and classified the specimens as belonging to \textit{Tilia cordata}, \textit{Tilia platyphylos} or their hybrid \textit{Tilia europea (x)}. Some specimens were not classified in the field (table~\ref{tab:TiliaN}). The research goal was to see whether the field determination matches with the genetical information.
+
+<<results = tex, echo = FALSE>>=
+data(TiliaDesign)
+library(xtable)
+SpecList <- unique(TiliaDesign[, c("Group", "Specimen")])
+SpecList <- aggregate(
+  SpecList[, "Specimen", drop = FALSE], 
+  by = SpecList[, "Group", drop = FALSE], 
+  FUN = length)
+print(xtable(SpecList, caption = "Number of specimen per group."), include.rownames = FALSE, label = "tab:TiliaN")
+@
+
+The AFLP was run on a LiCor slabgel system. Then the fluorescence was measured using the Saga MX software. \textbf{This part needs to be more detailed.}
+
+We would like to thank Kristien Vander Mijnsbrugge and An Vanden Broeck for their permission to use the dataset in the AFLP package.
+
+\end{document}
