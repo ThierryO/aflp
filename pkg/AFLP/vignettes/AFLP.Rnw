@@ -29,6 +29,7 @@
 <<foo,include=FALSE,echo=FALSE>>=
 library(AFLP)
 options(width = 60)
+options(str = strOptions(strict.width = "cut"))
 foo <- packageDescription("AFLP")
 @
 
@@ -77,7 +78,7 @@ str(fluorescence(Tilia))
 summary(fluorescence(Tilia))
 @
 
-The fluorescence can be added manually as well. In this case you need to prepare a \texttt{data.frame} with 6 columns: \textit{PC} (a factor indicating the primer combination), \textit{Replicate} (a factor with the replicate ID), \textit{Fluorescence} (the measured fluorescence), \textit{Marker} (the size of the marker in basepairs), \textit{Normalised} (NA, will hold the normalised fluorescence) and \textit{Score} (NA, will hold the classification).
+The fluorescence can be added manually as well. In this case you need to prepare a \texttt{data.frame} with 6 columns: \textit{PC} (a factor indicating the primer combination), \textit{Replicate} (a factor with the replicate ID), \textit{Fluorescence} (the measured fluorescence), \textit{Marker} (the size of the marker in basepairs), \textit{Normalised} (\texttt{NA}, will hold the normalised fluorescence) and \textit{Score} (\texttt{NA}, will hold the classification).
 
 <<eval = FALSE>>=
 fluorescence(Tilia) <- Your.data.frame
@@ -85,6 +86,7 @@ fluorescence(Tilia) <- Your.data.frame
 
 
 \chapter{Normalising the raw fluorescence}
+\section{\textbf{clean} and \textbf{normalise}}
 Prior to the normalisation you should use the \textbf{clean} function. This will do some sanity checking on the \texttt{AFLP} object, especially on missing data.
 
 <<unclean display, eval = FALSE>>=
@@ -104,6 +106,10 @@ output <- normalise(Tilia, output = "none")
 
 The normalisation estimates the effects of replicate, plate, lane, capilar and marker on the average fluorescence. The algorithm selects the appropriate combination of effects based on the design and the number of markers. The user has to decide which transformation to use.
 
+The user has three options for \textit{output}: \texttt{"screen"}, \texttt{"tex"} and \texttt{"none"}. \texttt{"screen"}, which is the default, does the normalisation and displays the model that is used in the normalisation and some standard graphs and tables to asses potential problems with the data. \texttt{"tex"} is equal to \texttt{"screen"} except that the output generates \LaTeX code for include the graphs and table in a document. It generates a section for each primer combination and a subsection for each random effect. \texttt{"none"} does the normalisation without generating tables and graphs. Therefore it is the fastest option.
+
+The graphs consist of QQ plots for the best unbiased lineair predictions (BLUPs) of the random effects and QQ plots of the residuals. As simple linear model is fitted for each QQ plot, quantifying the linear relationship between the observed and the theoretical values. The predictions of this model and theire $100 \time level$\%$ prediction intervals and added to the QQ plots. \textit{level} is an argument of \textbf{normalise} and defaults to \texttt{0.99}. Observed values outside these prediction interval are marked as "possible outliers" and tabulated. See \S\ref{S:detectingOutliers} for more information on outlier detection.
+
 <<normalise display, eval = FALSE>>=
 output <- normalise(Tilia, output = "tex", device = "png")
 @
@@ -112,6 +118,7 @@ output <- normalise(Tilia, output = "tex", device = "png")
 output <- normalise(Tilia, output = "tex", device = "png")
 @
 
+\section{Detecting and removing outliers}
 
 <<remove outliers from replicates>>=
 repOutliers <- replicates(output$outliers)
@@ -174,7 +181,28 @@ SpecList <- aggregate(
 print(xtable(SpecList, caption = "Number of specimen per group."), include.rownames = FALSE, label = "tab:TiliaN")
 @
 
-The AFLP was run on a LiCor slabgel system. Then the fluorescence was measured using the Saga MX software. \textbf{This part needs to be more detailed.}
+The AFLP was run on a LiCor Sequencer system with primer combination from table\ref{tab:Primers}. 
+
+\begin{table}
+  \begin{centering}
+  \begin{tabular}{llr}
+  \hline
+  Code & Primer combination & Label \\
+  \hline
+  PC1 & E-ACT M-CTG & 700 \\
+  PC2 & E-ACG M-CAA & 800 \\
+  PC3 & E-AGC M-CAT & 700 \\
+  PC4 & E-ACA M-CTG & PC4 \\
+  \hline
+  \end{tabular}
+  \caption{Used primer combination and labels}
+  \end{centering}
+  \label{tab:Primers}
+\end{table}
+
+The LiCor images were imported in the Saga MX  software. The images were sized using a size standard \textbf{(which?)} placed on lane 1. Desmiling was done using about xxx monomorphic markers in the 50 - 400 bp range. Then potential markers were selected. The fluoresence and size of of all selected bands were measured by the software and exported as tab-delimited text files. These files are available in the \texttt{extdata} folder of the package.
+
+The design of the experiment is available as the \textit{Tiliadesign} \texttt{data.frame}.
 
 We would like to thank Kristien Vander Mijnsbrugge and An Vanden Broeck for their permission to use the dataset in the AFLP package.
 

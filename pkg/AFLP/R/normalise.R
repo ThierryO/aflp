@@ -127,7 +127,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			cat("\\section{", currentPC, "}\n\n", sep = "")
 			PCn <- sub(":", "_", currentPC)
 			cat("\\begin{verbatim}\n")
-			print(summary(model))
+			cat(summary(model))
 			cat("\\end{verbatim}\n")
 		}
 		Outliers <- lapply(names(REF), function(i){
