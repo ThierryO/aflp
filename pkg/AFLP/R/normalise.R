@@ -2,7 +2,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
   # #####################
   # Fooling R CMD check #
   #######################
-  fit <- lwr <- Observed <- Theoretical <- upr <- NULL
+  fit <- lwr <- Observed <- PC <- Theoretical <- upr <- NULL
   # #####################
   # Fooling R CMD check #
   #######################
@@ -14,6 +14,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			stop("The ggplot2 package is required for the graphics")
 		}
 		if(output == "tex"){
+      ThisRun <- paste(c("_", sample(c(letters, 0:9), 5)), collapse = "")
 			if(!require(xtable)){
 				stop("The xtable package is required for LaTeX output")
 			}
@@ -114,7 +115,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	data@model <- as.formula(formula)
 	#z <- subset(dataset, PC == "B")
 	#z <- subset(dataset, PC == "PC1")
-	results <- daply(dataset, "PC", function(z){
+	results <- daply(dataset, .(PC), function(z){
     currentPC <- z$PC[1]
 		z$fMarker <- factor(z$fMarker)
 		model <- lmer(data@model, data = z)
@@ -124,11 +125,14 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			z$Sign <- REF[["fMarker"]][, "(Intercept)"][z$fMarker]
 		}
 		if(output == "tex"){
-			cat("\\section{", currentPC, "}\n\n", sep = "")
-			PCn <- sub(":", "_", currentPC)
+			cat("\\section{", levels(currentPC)[currentPC], "}\n\n", sep = "")
+			PCn <- sub(":", "_", levels(currentPC)[currentPC])
 			cat("\\begin{verbatim}\n")
-			cat(summary(model))
+			print(summary(model))
 			cat("\\end{verbatim}\n")
+		} else if (output == "screen"){
+		  print(levels(currentPC)[currentPC])
+		  print(summary(model))
 		}
 		Outliers <- lapply(names(REF), function(i){
 			dfm <- data.frame(Observed = REF[[i]]$"(Intercept)", Label = rownames(REF[[i]]))
@@ -145,8 +149,8 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			Outlier <- dfm[dfm$Outlier != "Acceptable", c("Label", "Observed")]
 			if(output == "tex"){
 				cat("\\subsection{", i, "}\n\n", sep = "")
-				caption <- paste("QQ-plot of the random effects at the level", i, "for primer combination", currentPC)
-				filename <- paste("RF", sub(":", "", i), PCn, ".", device, sep = "")
+				caption <- paste("QQ-plot of the random effects at the level", i, "for primer combination", levels(currentPC)[currentPC])
+				filename <- paste("RF", sub(":", "", i), PCn, "_", ThisRun, ".", device, sep = "")
 				ggsave.latex(p, caption = caption, filename = filename, width = 6, height = 4, path = path)
 				if(nrow(Outlier) > 0){
 					print(xtable(Outlier[order(Outlier$Observed), ], caption = caption, align = "llr", digits = 3, display = c("s", "s", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
@@ -154,8 +158,8 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 				cat("\\FloatBarrier\n\n")
 			} else if (output != "none"){
 				X11()
-				print(p + opts(title = paste(currentPC, i)))
-				cat("\n\n", currentPC, i, "\n")
+				print(p + opts(title = paste(levels(currentPC)[currentPC], i)))
+				cat("\n\n", levels(currentPC)[currentPC], i, "\n")
 				if(nrow(Outlier) > 0){
 					cat("Possible outliers:\n")
 					print(Outlier)
@@ -178,15 +182,15 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		Outlier <- dfm[dfm$Outlier != "Acceptable", c("Replicate", "Marker", "Observed")]
 		if(output == "tex"){
 			cat("\\subsection{Globale outliers}\n\n")
-			caption <- paste("QQ-plot of the residuals for primer combination", currentPC)
-			filename <- paste("RFGlobal", PCn, ".", device, sep = "")
+			caption <- paste("QQ-plot of the residuals for primer combination", levels(currentPC)[currentPC])
+			filename <- paste("RFGlobal", PCn, "_", ThisRun, ".", device, sep = "")
 			ggsave.latex(p, caption = caption, filename = filename, width = 6, height = 4, path = path)
 			print(xtable(Outlier[order(Outlier$Observed), ], caption = caption, align = "llrr", digits = 3, display = c("s", "s", "f", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 			cat("\\FloatBarrier\n\n")
 		} else if (output != "none"){
 			X11()
-			print(p + opts(title = paste(currentPC, "residuals")))
-			cat("\n\n", currentPC, "\n")
+			print(p + opts(title = paste(levels(currentPC)[currentPC], "residuals")))
+			cat("\n\n", levels(currentPC)[currentPC], "\n")
 			if(nrow(Outlier) > 0){
 				cat("Possible outliers:\n")
 				print(Outlier)
