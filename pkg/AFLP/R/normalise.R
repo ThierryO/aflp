@@ -150,7 +150,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			if(output == "tex"){
 				cat("\\subsection{", i, "}\n\n", sep = "")
 				caption <- paste("QQ-plot of the random effects at the level", i, "for primer combination", levels(currentPC)[currentPC])
-				filename <- paste("RF", sub(":", "", i), PCn, "_", ThisRun, ".", device, sep = "")
+				filename <- paste("RF", sub(":", "", i), PCn, ThisRun, ".", device, sep = "")
 				ggsave.latex(p, caption = caption, filename = filename, width = 6, height = 4, path = path)
 				if(nrow(Outlier) > 0){
 					print(xtable(Outlier[order(Outlier$Observed), ], caption = caption, align = "llr", digits = 3, display = c("s", "s", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
@@ -183,7 +183,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		if(output == "tex"){
 			cat("\\subsection{Globale outliers}\n\n")
 			caption <- paste("QQ-plot of the residuals for primer combination", levels(currentPC)[currentPC])
-			filename <- paste("RFGlobal", PCn, "_", ThisRun, ".", device, sep = "")
+			filename <- paste("RFGlobal", PCn, ThisRun, ".", device, sep = "")
 			ggsave.latex(p, caption = caption, filename = filename, width = 6, height = 4, path = path)
 			print(xtable(Outlier[order(Outlier$Observed), ], caption = caption, align = "llrr", digits = 3, display = c("s", "s", "f", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 			cat("\\FloatBarrier\n\n")
