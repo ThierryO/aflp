@@ -78,7 +78,7 @@ str(fluorescence(Tilia))
 summary(fluorescence(Tilia))
 @
 
-The fluorescence can be added manually as well. In this case you need to prepare a \texttt{data.frame} with 6 columns: \textit{PC} (a factor indicating the primer combination), \textit{Replicate} (a factor with the replicate ID), \textit{Fluorescence} (the measured fluorescence), \textit{Marker} (the size of the marker in basepairs), \textit{Normalised} (\texttt{NA}, will hold the normalised fluorescence) and \textit{Score} (\texttt{NA}, will hold the classification).
+The fluorescence can be added manually as well. In this case you need to prepare a \texttt{data.frame} with 6 columns: \textit{PC} (a factor indicating the primer combination), \textit{Replicate} (a factor with the replicate ID), \textit{Fluorescence} (the measured fluorescence), \textit{Marker} (the size of the marker in basepairs), \textit{Normalised} (\NA, will hold the normalised fluorescence) and \textit{Score} (\NA, will hold the classification).
 
 <<eval = FALSE>>=
 fluorescence(Tilia) <- Your.data.frame
@@ -158,7 +158,7 @@ output <- normalise(Tilia, output = "tex", device = "png")
 
 The normalisation removes the effects of plate, replicate, capilar, marker,\ldots for the fluorescence. We expect that the normalise fluoresence of polymorphic markers has a bimodal distribution: a baseline fluorescence when the marker is absent and a high fluorescence when the marker is present. On top of that there will be some measurement error changing the fluorescence. So we don't get two values but a range of values.
 
-\textbf{classify} estimates the density distribution of the normalised fluorescence for each marker. These distributions are displayed on graphs when the user sets \textit{output} to \texttt{"screen"} (default) or \texttt{"tex"}.Then the algorithm looks for different peaks in the distribution. 
+\textbf{classify} estimates the density distribution of the normalised fluorescence for each marker. These distributions are displayed on graphs when the user sets \textit{output} to \texttt{"screen"} (default) or \texttt{"tex"}. Then the algorithm looks for different peaks in the distribution. A peak is a local maximum with a height which is at least \textit{thresholdPeakRatio} of the largest peak (default = \texttt{0.03}). The border between two peaks is set at the local minimum between two sufficiently large local maxima. If this results in more than \textit{maxBorder} border(s) (default = \texttt{1}), then only the \textit{maxBorder} smallest border(s) are retained. Then there is only one sufficiently large local maximum, then the border is set at \texttt{Inf}. Such markers are considered monomorphic. The normalised fluorescence is binned with these borders and the result is stored in the \texttt{Score} variable in the \texttt{fluorescence} \texttt{data.frame} of the \texttt{AFLP} object.
 
 <<classify display, eval = FALSE>>=
 Tilia <- output$data
@@ -172,6 +172,48 @@ Tilia <- classify(Tilia, output = "tex", device = "png")
 
 
 \chapter{Estimating repeatability}
+
+Any classification has a risk for misclassification. However, this risk is high variable. In order to work with thrustworthy data, we strongly recommend to assest the repeatability of the analysis. A second analysis of the same sample should, in theory, yield an identical DNA fingerprint. This is in practice hardly the case since the signal can be influenced by other factors than just the true underlying signal from the DNA.
+
+\section{Repeatability based on the fluorescence}
+A first way to investigate this, it to look at the variance in raw fluorescence within measurements for the same marker and the same specimen. The variance is zero when all measurements are equal and increases when the differences become larger. We calculate these variances for each combination of marker and specimen that have multiple measurement (e.g. specimens with more than one replicate per specimen). Averaging these variances over a given specimen gives an idea of the average repeatability of that specimen. A low score indicates very similar measurements within the specimen, whereas a high score is an indication of dissimilar measurements. E.g. when one of the replicates of a specimen has a problematic amplification, the fluorescence measurements will be much lower than the other replicates of that specimen. That would result in a high average variance. Likewise we can aggregate over a given marker, highlighting potential problems due to the marker and not the replicates. The interpretation is similar.
+
+Normalising the fluorescence should remove some of the noise in the data due to batch effects. Therefore the repeatability score for the normalised fluorescence will on average be lower than the repeatability score of the raw fluorescence. The \textbf{repeatability} function create two scatterplots displaying the repeatability score for the raw versus the normalised fluorescence score (provided \texttt{output = "screen"} or \texttt{output = "tex"}). The line indicates equal repeatability scores. Thus most of the points should be on the lower righthand side of this line (indicating more variability in the raw fluorescence than in the normalised fluorescence).
+
+\section{Repeatability based on scores}
+
+When the (normalised) fluorescence is classified into presence-absence data, then we expect that all replicates of a given specimen get the same state for a given marker. E.g. the marker is either present or absent in all replicates. If not, then we clearly have misclassifications. Unfortunalty, we don't know the truth: is the marker is reality present or absent in a given specimen? We assume that the majority is correctly classified. Assume we have five replicates of a given specimen and for a given marker we get 4 absences and 1 presence. The majority is absent, thus we assume 1 misclassification. Due to our assumption, the maximum number of misclassifications is not equal to the number of replicates but the half that number rounded down to an integer. Thus we have maximum 2 misclassifications when we have 5 replicates (see table~\ref{tab:Misclassifcation}). Based on the observed scores on a given marker for all replicate of a given specimen and our assumption, we can calculate the observed number of errors and the maximum number of errors.
+
+\begin{table}[hbt]
+  \begin{center}
+  \begin{tabular}{rrlr}
+  \hline
+  Absent & Present & Assumption & Misclassifications \\
+  \hline
+  0 & 5 & Present & 0 \\
+  1 & 4 & Present & 1 \\
+  2 & 3 & Present & 2 \\
+  3 & 2 & Absent & 2 \\
+  4 & 1 & Absent & 1 \\
+  5 & 0 & Absent & 0 \\
+  \hline
+  \end{tabular}
+  \label{tab:Misclassifcation}
+  \caption{Number of absent and present scores of a given marker for the replicates of a given specimen and the resulting assumption and number of misclassifications.}
+  \end{center}
+\end{table}
+
+When we aggregate these numbers we get meaningfull information on markers or specimens. Our repeatability scores are based on the sums of the observed errors and the sum of the theoretically maximum number of errors. \eqref{eq:ScoreMarker} defines the repeatability $R_i$ for a marker $i$ and \eqref{eq:ScoreSpecimen} the reapeatability $R_j$ for specimen $j$ . $t_{ij}$ is the theoretical maximum number of errors for marker $i$ and specimen $j$, $o_{ij}$ is the observed maximum number of errors for marker $i$ and specimen $j$, $s$ is the number of specimens and $m$ the number of markers. $R_i$ and $R_j$ are restricted to the interval $[0, 1]$, with 1 indicating no observed errors (perfect repeatability) and 0 indicating that the number of observed errors is always equal to the theoretical maximum (not repeatable at all).
+
+\begin{equation}
+  \label{eq:ScoreMarker}
+  R_i = \dfrac{\sum\limits_{j = 1} ^s t_{ij} - \sum\limits_{j = 1} ^s o_{ij}}{\sum\limits_{j = 1} ^s t_{ij}}
+\end{equation}
+
+\begin{equation}
+  \label{eq:ScoreSpecimen}
+  R_j = \dfrac{\sum\limits_{i = 1} ^m t_{ij} - \sum\limits_{j = 1} ^m o_{ij}}{\sum\limits_{j = 1} ^m t_{ij}}
+\end{equation}
 
 <<repeat display, eval = FALSE>>=
 output <- repeatability(Tilia, output = "tex", device = "png")
