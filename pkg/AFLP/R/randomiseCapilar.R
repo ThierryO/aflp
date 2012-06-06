@@ -67,7 +67,8 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 	Design <- Design[with(Design, order(Plate, Line, Capilar)), ]
 	Design$Replicate<- sprintf("%s%04i", Prefix, seq_len(nrow(Design)) + FirstLabID - 1)
 	Specimens <- sample(Specimens)
-	while(sum(is.na(Design$Specimen)) - length(Specimens) >= 4){
+  
+	while(sum(is.na(Design$Specimen)) - length(Specimens) >= 2 + (nPlate > 1)){
 		Design$Prob <- 
 			(
 				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
@@ -75,6 +76,7 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
 			) ^ 10
 		#add replicate within plate and capilar
+		
 		Remain <- subset(cast(Plate + Capilar ~ ., data = Design, subset = is.na(Specimen), value = "Prob", fun.aggregate = c(length, mean)), length >= 2)
 		i <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:2]
 		lines <- sample(subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar == i$Capilar)$Line, 2)
@@ -89,26 +91,28 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 		Remain <- subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar != i$Capilar)
 		j <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:3]
 		Design$Specimen[with(Design, Plate == j$Plate & Capilar == j$Capilar & Line == j$Line)] <- Specimens[1]
-		Design$Prob <- 
-			(
-				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
-			* 
-				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
-			) ^ 10
-		#add replicate between plate and within capilar
-		Remain <- subset(Design, is.na(Specimen) & Plate != i$Plate & Capilar == i$Capilar)
-		k <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:3]
-		Design$Specimen[with(Design, Plate == k$Plate & Capilar == k$Capilar & Line == k$Line)] <- Specimens[1]
-		Design$Prob <- 
-			(
-				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
-			* 
-				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
-			) ^ 10
-		#add replicate between plate and between capilar
-		Remain <- subset(Design, is.na(Specimen) & Plate != i$Plate & Capilar != i$Capilar)
-		m <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$Prob), ]
-		Design$Specimen[with(Design, Plate == m$Plate & Capilar == m$Capilar & Line == m$Line)] <- Specimens[1]
+		if(length(unique(Design$Plate)) > 1){
+		  Design$Prob <- 
+  			(
+  				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
+  			* 
+  				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
+  			) ^ 10
+      #add replicate between plate and within capilar
+      Remain <- subset(Design, is.na(Specimen) & Plate != i$Plate & Capilar == i$Capilar)
+  		k <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:3]
+  		Design$Specimen[with(Design, Plate == k$Plate & Capilar == k$Capilar & Line == k$Line)] <- Specimens[1]
+  		Design$Prob <- 
+  			(
+  				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
+  			* 
+  				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
+  			) ^ 10
+    	#add replicate between plate and between capilar
+    	Remain <- subset(Design, is.na(Specimen) & Plate != i$Plate & Capilar != i$Capilar)
+    	m <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$Prob), ]
+    	Design$Specimen[with(Design, Plate == m$Plate & Capilar == m$Capilar & Line == m$Line)] <- Specimens[1]
+    }
 		Specimens <- Specimens[-1]
 	}
 	if(sum(is.na(Design$Specimen)) > length(Specimens)){
