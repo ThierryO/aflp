@@ -1,7 +1,4 @@
 setMethod("hclust", signature(d = "AFLP"), function(d, method ="complete", members = NULL){
-	if(!require(vegan)){
-		stop("The vegan package is required of hierarchical clustering")
-	}
 	if(all(is.na(fluorescence(d)$Score))){
 		stop("AFLP data must be classified first")
 	}

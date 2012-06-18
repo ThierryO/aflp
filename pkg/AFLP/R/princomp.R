@@ -1,11 +1,5 @@
 setMethod("princomp", signature(x = "AFLP"), function(x, method = c("normalised", "raw", "Jaccard"), axes = c(1, 2), screeplot = FALSE,...){
 	method <- match.arg(method)
-	if(!require(vegan)){
-		stop("The vegan package is required for the PCO analysis")
-	}
-	if(!require(ggplot2)){
-		stop("The ggplot2 package is required for the PCO analysis")
-	}
 	if(all(is.na(fluorescence(x)$Score))){
 		stop("AFLP data must be classified first")
 	}

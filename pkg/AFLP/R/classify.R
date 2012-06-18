@@ -8,16 +8,6 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
   #######################
   
   output <- match.arg(output)
-	if(output != "none"){
-		if(!require(ggplot2)){
-			stop("The ggplot2 package is required")
-		}
-		if(output == "tex"){
-			if(!require(xtable)){
-				stop("The xtable package is required")
-			}
-		}
-	}
 	if(!is.AFLP(data)){
 		stop("data must be an AFLP object.")
 	}

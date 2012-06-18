@@ -9,16 +9,8 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 
   output <- match.arg(output)
 	transformation <- match.arg(transformation)
-	if(output != "none"){
-		if(!require(ggplot2)){
-			stop("The ggplot2 package is required for the graphics")
-		}
-		if(output == "tex"){
-      ThisRun <- paste(c("_", sample(c(letters, 0:9), 5)), collapse = "")
-			if(!require(xtable)){
-				stop("The xtable package is required for LaTeX output")
-			}
-		}
+	if(output == "tex"){
+    ThisRun <- paste(c("_", sample(c(letters, 0:9), 5)), collapse = "")
 	}
 	ExtraCols <- colnames(fluorescence(data))
   ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]

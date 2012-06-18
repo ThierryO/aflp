@@ -12,9 +12,6 @@ dummySlabgel <- function(nSpecimen = 50, nGroup = 2, nMarker = 50,
 	),
 	transformation = c("log", "logit", "none")){
 
-	if(!require(mvtnorm)){
-		stop("This function requires the mvtnorm package")
-	}
 	transformation <- match.arg(transformation)
 	dummy <- randomiseSlabgel(
 		nSpecimen, 

@@ -1,7 +1,4 @@
 read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
-  require(seqinr, quietly = TRUE)
-  require(signal, quietly = TRUE)
-  require(zoo, quietly = TRUE)
   Peaks <- do.call(rbind, lapply(seq_along(files), function(i){
     filename <- files[i]
     if(verbose) cat(filename, "\n\r")
@@ -68,9 +65,6 @@ read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(Siz
 }
 
 read.fsa <- function(files, path = "", dye, SizeStandard, Breaks = NULL, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
-  require(seqinr, quietly = TRUE)
-  require(signal, quietly = TRUE)
-  require(zoo, quietly = TRUE)
   if(missing(Breaks)){
     if(verbose){
       cat("Estimating optimal binning thresholds\n\n")

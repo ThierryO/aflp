@@ -7,16 +7,6 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
   # Fooling R CMD check #
   #######################
   output <- match.arg(output)
-	if(output != "none"){
-		if(!require(ggplot2)){
-			stop("The ggplot2 package is required to create the graphics.")
-		}
-		if(output == "tex"){
-			if(!require(xtable)){
-				stop("The xtable package is required to create LaTeX output.")
-			}
-		}
-	}
 	Repeated <- replicates(data)[, c("Specimen", "Replicate", "Lane")]
 	if(nrow(replicates(outliers(data))) > 0){
 		Repeated <- subset(merge(Repeated, cbind(replicates(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))[, c("Specimen", "Replicate", "Lane")]
