@@ -1,7 +1,7 @@
 read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
   Peaks <- do.call(rbind, lapply(seq_along(files), function(i){
     filename <- files[i]
-    if(verbose) cat(filename, "\n\r")
+    if(verbose) message(filename, "\n\r")
     #reading the data from the fsa file
     pattern <- read.abif(paste(path, filename, sep = ""))
     #only keeping the required information
@@ -67,16 +67,16 @@ read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(Siz
 read.fsa <- function(files, path = "", dye, SizeStandard, Breaks = NULL, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
   if(missing(Breaks)){
     if(verbose){
-      cat("Estimating optimal binning thresholds\n\n")
+      message("Estimating optimal binning thresholds")
     }
     Breaks <- read.fsa.bins(files = files, path = path, dye = dye, SizeStandard = SizeStandard, Range = Range, verbose = verbose, binwidth = binwidth, SNR = SNR)
   }
   if(verbose){
-    cat("\n\n Measuring fluorescence\n\n")
+    message("Measuring fluorescence")
   }
   Peaks <- do.call(rbind, lapply(seq_along(files), function(i){
     filename <- files[i]
-    if(verbose) cat(filename, "\n\r")
+    if(verbose) message(filename)
     #reading the data from the fsa file
     pattern <- read.abif(paste(path, filename, sep = ""))
     #only keeping the required information
