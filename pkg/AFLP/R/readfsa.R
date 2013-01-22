@@ -1,7 +1,7 @@
 read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
   Peaks <- do.call(rbind, lapply(seq_along(files), function(i){
     filename <- files[i]
-    if(verbose) message(filename, "\n\r")
+    if(verbose) message(filename)
     #reading the data from the fsa file
     pattern <- read.abif(paste(path, filename, sep = ""))
     #only keeping the required information
@@ -64,7 +64,10 @@ read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(Siz
   return(Breaks)
 }
 
-read.fsa <- function(files, path = "", dye, SizeStandard, Breaks = NULL, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
+read.fsa <- function(path = ".", files = NULL, dye, SizeStandard, Breaks = NULL, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
+  if(missing(files)){
+    files <-  list.files(path, pattern = "fsa$", recursive = TRUE)
+  }
   if(missing(Breaks)){
     if(verbose){
       message("Estimating optimal binning thresholds")

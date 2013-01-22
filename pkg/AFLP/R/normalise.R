@@ -105,7 +105,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		formula <- paste(formula, " + fMarker")
 	}
 	data@model <- as.formula(formula)
-	#z <- subset(dataset, PC == "B")
+	#z <- subset(dataset, PC == "1")
 	#z <- subset(dataset, PC == "PC1")
 	results <- daply(dataset, .(PC), function(z){
     currentPC <- z$PC[1]
@@ -150,7 +150,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 				cat("\\FloatBarrier\n\n")
 			} else if (output != "none"){
 				X11()
-				print(p + opts(title = paste(levels(currentPC)[currentPC], i)))
+				print(p + ggtitle(paste(levels(currentPC)[currentPC], i)))
 				cat("\n\n", levels(currentPC)[currentPC], i, "\n")
 				if(nrow(Outlier) > 0){
 					cat("Possible outliers:\n")
@@ -181,7 +181,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			cat("\\FloatBarrier\n\n")
 		} else if (output != "none"){
 			X11()
-			print(p + opts(title = paste(levels(currentPC)[currentPC], "residuals")))
+			print(p + ggtitle(paste(levels(currentPC)[currentPC], "residuals")))
 			cat("\n\n", levels(currentPC)[currentPC], "\n")
 			if(nrow(Outlier) > 0){
 				cat("Possible outliers:\n")
@@ -221,11 +221,16 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			Residual = oResidual[with(oResidual, order(PC, Observed)), ])
 		)
 	})
-	dataset <- do.call("rbind", lapply(results, function(z)z$z))
+  if(class(results[[1]]) == "data.frame"){
+    dataset <- results$z
+    Outliers <- results$Outliers
+  } else {
+	  dataset <- do.call("rbind", lapply(results, function(z)z$z))
+	  Outliers <- do.call("rbind.AFLP.outlier", lapply(results, function(z)z$Outliers))
+  }
 	if("Sign" %in% colnames(dataset)){
 		ExtraCols <- c("Sign", ExtraCols)
 	}
-	Outliers <- do.call("rbind.AFLP.outlier", lapply(results, function(z)z$Outliers))
 	data@Fluorescence <- dataset[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)]
 	invisible(list(data = data, outliers = Outliers))
 }

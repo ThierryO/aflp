@@ -44,7 +44,7 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 	}
 	if(all(is.na(rawData$Normalised))){
 		if(bootstrap){
-			bootMarkerDeviance <- cast(PC + Marker ~ ., data = ldply(bootDeviance, function(x){x$Marker}), value.var = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
+			bootMarkerDeviance <- cast(PC + Marker ~ ., data = ldply(bootDeviance, function(x){x$Marker}), value = "Raw", fun.aggregate = quantile, prob = 0.95, type = 6)
 			colnames(bootMarkerDeviance)[3] <- "Raw"
 			MarkerDeviance <- merge(MarkerDeviance, bootMarkerDeviance, by = c("PC", "Marker"), suffixes = c("", ".y"))
 			MarkerDeviance$Outlier <- factor(ifelse(with(MarkerDeviance, Raw > Raw.y), 1, 2), levels = 1:2, labels = c("Possible", "Acceptable"))
@@ -118,11 +118,11 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 		}
 	} else if(output == "screen"){
 		X11()
-		print(pMarker + opts(title = "Repeatability for markers (fluorescence)"))
+		print(pMarker + ggtitle("Repeatability for markers (fluorescence)"))
 		cat("\nRepeatability for markers\n\n")
 		print(MarkerDeviance[, colnames(MarkerDeviance) %in% c("PC", "Marker", "Raw", "Normalised", "Outlier")])
 		X11()
-		print(pSpecimen + opts(title = "Repeatability for specimens (fluorescence)"))
+		print(pSpecimen + ggtitle("Repeatability for specimens (fluorescence)"))
 		cat("\nRepeatability for specimens\n\n")
 		print(SpecimenDeviance[, colnames(SpecimenDeviance) %in% c("PC", "Specimen", "Raw", "Normalised", "Outlier")])
 	}
@@ -270,20 +270,20 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 		} else if (output == "screen"){
 			X11()
-			print(pMarker + opts(title = "Repeatability for markers (score)"))
+			print(pMarker + ggtitle("Repeatability for markers (score)"))
 			cat("\nRepeatability for markers\n\n")
 			print(qcMarker)
 			X11()
-			print(pSpecimen + opts(title = "Repeatability for specimens (score)"))
+			print(pSpecimen + ggtitle("Repeatability for specimens (score)"))
 			cat("\nRepeatability for specimens\n\n")
 			print(qcSpecimen)
 			d_ply(qcSpecimenInd, .(PC, Specimen), function(Z){
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], ", Specimen: ", levels(Z$Specimen)[Z$Specimen[1]], "\r\n", sep = "")
-				print(cast(as.formula("ReplicateA ~ ReplicateB"), data = Z, value.var = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
+				print(cast(as.formula("ReplicateA ~ ReplicateB"), data = Z, value = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
 			d_ply(qcPlate, "PC", function(Z){
 				cat("\r\nPC: ", levels(Z$PC)[Z$PC[1]], "\r\n", sep = "")
-				print(cast(formula = PlateA ~ PlateB, data = Z, value.var = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
+				print(cast(formula = PlateA ~ PlateB, data = Z, value = "Score", fill = "", fun.aggregate =function(x){ifelse(is.na(x), NA, sprintf("%0.3f", x))}))
 			})
 		}
 	}

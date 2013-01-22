@@ -1,4 +1,4 @@
-importFrom("ggplot2", ggsave, ggplot, aes, aes_string, opts, geom_abline, geom_density, geom_density2d, geom_histogram, geom_hline, geom_line, geom_point, geom_ribbon, geom_rug, geom_vline, scale_x_continuous, scale_y_continuous, facet_wrap, coord_equal)
+importFrom("ggplot2", ggsave, ggplot, aes, aes_string, opts, geom_abline, geom_density, geom_density2d, geom_histogram, geom_hline, geom_line, geom_point, geom_ribbon, geom_rug, geom_vline, scale_x_continuous, scale_y_continuous, facet_wrap, coord_equal, ggtitle)
 importFrom("mvtnorm", rmvnorm)
 importFrom("stats", hclust, princomp)
 importFrom("seqinr", read.abif)
