@@ -107,7 +107,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	data@model <- as.formula(formula)
 	#z <- subset(dataset, PC == "1")
 	#z <- subset(dataset, PC == "PC1")
-	results <- daply(dataset, .(PC), function(z){
+	results <- dlply(dataset, .(PC), function(z){
     currentPC <- z$PC[1]
 		z$fMarker <- factor(z$fMarker)
 		model <- lmer(data@model, data = z)
@@ -221,13 +221,8 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			Residual = oResidual[with(oResidual, order(PC, Observed)), ])
 		)
 	})
-  if(class(results[[1]]) == "data.frame"){
-    dataset <- results$z
-    Outliers <- results$Outliers
-  } else {
-	  dataset <- do.call("rbind", lapply(results, function(z)z$z))
-	  Outliers <- do.call("rbind.AFLP.outlier", lapply(results, function(z)z$Outliers))
-  }
+  dataset <- do.call("rbind", lapply(results, function(z)z$z))
+  Outliers <- do.call("rbind.AFLP.outlier", lapply(results, function(z)z$Outliers))
 	if("Sign" %in% colnames(dataset)){
 		ExtraCols <- c("Sign", ExtraCols)
 	}

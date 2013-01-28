@@ -7,7 +7,7 @@ Get fluorescence data from fsa files
 \description{
 Read fluorescence data from fsa files. }
 \usage{
-read.fsa(files, path = "", dye, SizeStandard, 
+read.fsa(path = ".", files = NULL, dye, SizeStandard, 
   Breaks = NULL, Range = range(SizeStandard), 
   binwidth = 1, SNR = 20, verbose = TRUE)
 }

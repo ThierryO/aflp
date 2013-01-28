@@ -21,8 +21,8 @@ the \code{link{border<-}} function.
 \usage{
 classify(data, output = c("screen", "none", "tex"), 
   maxBorder = 1, tresholdPeakRatio = 0.03, 
-  tresholdMonomorph = 0, device = "pdf", path = NULL, nrows = 4, 
-  ncols = 4, keep.border = FALSE)
+  tresholdMonomorph = 0, tresholdMaxValley = 0.95, device = "pdf",
+  path = NULL, nrows = 4, ncols = 4, keep.border = FALSE)
 }
 \arguments{
   \item{data}{
@@ -46,6 +46,9 @@ classify(data, output = c("screen", "none", "tex"),
 	Calculate the ratio of 'absent' and 'present' bins in a marker. Consider the
 	marker as monomorph if either of them is smaller than the threshold. Defaults to 0. 
 }
+  \item{tresholdMaxValley}{
+   A treshold for valleys between peaks in the relative density. P,my vallyes below this treshold are considered for breaks. Defaults to 0.95.
+  }
   \item{path}{
 	the path where the figures are saved. Only used if \code{output = "tex"}. 
 	Defaults to NULL, which is the working directory.

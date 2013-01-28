@@ -2,6 +2,9 @@ setGeneric("border", function(data, pc, marker) {
 	standardGeneric("border")
 })
 setMethod("border", "AFLP", function(data, pc, marker) {
+  #fooling R CMD check
+  PC <- NULL
+  #fooling R CMD check
 	if(missing(pc)){
 		data@Borders
 	} else if(missing(marker)){

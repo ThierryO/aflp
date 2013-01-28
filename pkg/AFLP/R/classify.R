@@ -1,4 +1,4 @@
-classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE){
+classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, tresholdPeakRatio = 0.03, tresholdMonomorph = 0, tresholdMaxValley = .95, device = "pdf", path = NULL, nrows = 4, ncols = 4, keep.border = FALSE){
   # #####################
   # Fooling R CMD check #
   #######################
@@ -42,9 +42,8 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 			Dens$First <- c(0, diff(Dens$Density))
 			Dens$Second <- c(0, diff(Dens$First)) > 0
 			Dens$Ratio <- Dens$Density / max(Dens$Density)
-			Border <- Dens$Normalised[abs(Dens$First) < 1e-4]
-			Dens$Peak[Dens$Normalised %in% Border & Dens$Second] <- "Valley"
-			Dens$Peak[Dens$Normalised %in% Border & !Dens$Second & Dens$Ratio >= tresholdPeakRatio] <- "Peak"
+			Dens$Peak[abs(Dens$First) < 1e-4 & Dens$Second & Dens$Ratio <= tresholdMaxValley] <- "Valley"
+			Dens$Peak[abs(Dens$First) < 1e-4 & !Dens$Second & Dens$Ratio >= tresholdPeakRatio] <- "Peak"
 			Selection <- na.omit(Dens)
 			Selection <- Selection[cumsum(Selection$Peak == "Peak") > 0, ]
 			Selection <- Selection[rev(cumsum(rev(Selection$Peak == "Peak"))) > 0, ]
@@ -72,6 +71,9 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 		} else {
 			if(is.finite(Border)){
 				x$Score <- ifelse(x$Normalised <= Border, 0, 1)
+        if(min(table(x$Score)) / nrow(x) <= tresholdMonomorph){
+          x$Score <- ifelse(is.na(x$Sign) | x$Sign > 0, 1, 0)
+        }
 			} else {
 				x$Score <- ifelse(is.na(x$Sign) | x$Sign > 0, 1, 0)
 			}
