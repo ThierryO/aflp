@@ -90,16 +90,6 @@ fluorescence(Tilia) <- Your.data.frame
 \label{S:normalise}
 Prior to the normalisation you should use the \textbf{clean} function. This will do some sanity checking on the \texttt{AFLP} object, especially on missing data.
 
-<<unclean display, eval = FALSE>>=
-#will not run
-output <- normalise(Tilia, output = "none")
-@
-
-<<unclean display, echo = FALSE>>=
-output <- try(normalise(Tilia, output = "none"), silent = TRUE)
-cat(output[1])
-@
-
 <<clean run>>=
 Tilia <- clean(Tilia)
 output <- normalise(Tilia, output = "none")

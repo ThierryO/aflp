@@ -66,7 +66,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			formula <- paste(formula, "+ Lane")
 		}
 	} else if(length(levels(dataset$Capilar)) > 1){
-		formula <- paste(formula, "+ Capilar + ")
+		formula <- paste(formula, "+ Capilar")
 		if(length(levels(dataset$Lane)) > 5){
 			formula <- paste(formula, "+ (1|Lane)")
 		} else if(length(levels(dataset$Lane)) > 1){
@@ -110,7 +110,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	results <- dlply(dataset, .(PC), function(z){
     currentPC <- z$PC[1]
 		z$fMarker <- factor(z$fMarker)
-		model <- lmer(data@model, data = z)
+		model <- lmer(data@model, data = z, na.action = na.exclude)
 		z$Normalised <- residuals(model)
 		REF <- ranef(model)
 		if("fMarker" %in% names(REF)){
