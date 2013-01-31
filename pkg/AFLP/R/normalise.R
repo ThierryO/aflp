@@ -15,25 +15,26 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 	ExtraCols <- colnames(fluorescence(data))
   ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
 	dataset <- merge(replicates(data), fluorescence(data))
+  dataset$UseIt <- TRUE
 	if(nrow(replicates(outliers(data))) > 0){
-		dataset <- subset(merge(dataset, cbind(replicates(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
+		dataset <- merge(dataset, cbind(replicates(outliers(data))[, c("PC", "Replicate")], remove = TRUE), all.x = TRUE)
+    dataset$UseIt[!is.na(dataset$remove)] <- FALSE
 		dataset$remove <- NULL
-		dataset$Observed <- NULL
 	}
 	if(nrow(specimens(outliers(data))) > 0){
-		dataset <- subset(merge(dataset, cbind(specimens(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
+		dataset <- merge(dataset, cbind(specimens(outliers(data))[, c("PC", "Specimen")], remove = TRUE), all.x = TRUE)
+		dataset$UseIt[!is.na(dataset$remove)] <- FALSE
 		dataset$remove <- NULL
-		dataset$Observed <- NULL
 	}
 	if(nrow(markers(outliers(data))) > 0){
-		dataset <- subset(merge(dataset, cbind(markers(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
+		dataset <- merge(dataset, cbind(markers(outliers(data))[, c("PC", "Marker")], remove = TRUE), all.x = TRUE)
+		dataset$UseIt[!is.na(dataset$remove)] <- FALSE
 		dataset$remove <- NULL
-		dataset$Observed <- NULL
 	}
 	if(nrow(residuals(outliers(data))) > 0){
-		dataset <- subset(merge(dataset, cbind(residuals(outliers(data)), remove = TRUE), all.x = TRUE), is.na(remove))
-    dataset$remove <- NULL
-		dataset$Observed <- NULL
+		dataset <- merge(dataset, cbind(residuals(outliers(data))[, c("PC", "Replicate", "Marker")], remove = TRUE), all.x = TRUE)
+		dataset$UseIt[!is.na(dataset$remove)] <- FALSE
+		dataset$remove <- NULL
 	}
 	dataset$Specimen <- factor(dataset$Specimen)
 	dataset$Replicate <- factor(dataset$Replicate)
@@ -94,7 +95,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		nReplicate <- min(colSums(with(dataset, table(Replicate, PC)) > 0))
 		if(nReplicate > 5){
 			formula <- paste(formula, " + (1|Replicate)")
-		} else if(nSpecimen > 1){
+		} else if(nReplicate > 1){
 			formula <- paste(formula, " + Replicate")
 		}
 	}
@@ -105,13 +106,14 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		formula <- paste(formula, " + fMarker")
 	}
 	data@model <- as.formula(formula)
+  dataset$UseIt <- apply(!is.na(dataset[, c("Fluorescence", "PC", "Plate", "Lane", "Capilar", "Marker", "Replicate", "Specimen")]), 1, any) & dataset$UseIt
 	#z <- subset(dataset, PC == "1")
 	#z <- subset(dataset, PC == "PC1")
 	results <- dlply(dataset, .(PC), function(z){
     currentPC <- z$PC[1]
 		z$fMarker <- factor(z$fMarker)
-		model <- lmer(data@model, data = z, na.action = na.exclude)
-		z$Normalised <- residuals(model)
+		model <- lmer(data@model, data = z[z$UseIt, ])
+		z$Normalised[z$UseIt] <- residuals(model)
 		REF <- ranef(model)
 		if("fMarker" %in% names(REF)){
 			z$Sign <- REF[["fMarker"]][, "(Intercept)"][z$fMarker]
@@ -162,7 +164,8 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			Outlier
 		})
 		names(Outliers) <- names(REF)
-		dfm <- data.frame(Observed = z$Normalised, Replicate = z$Replicate, Marker = z$Marker)
+    dfm <- z[z$UseIt, c("Normalised", "Replicate", "Marker")]
+    colnames(dfm)[1] <- "Observed"
 		dfm$Theoretical <- qnorm(ppoints(nrow(dfm)))[order(order(dfm$Observed))]
 		dfm <- cbind(dfm, predict(lm(Observed ~ Theoretical, data = dfm), newdata = dfm, interval = "prediction", level = level))
 		dfm$Outlier <- factor(ifelse(dfm$Observed >= dfm$lwr & dfm$Observed <= dfm$upr, "Acceptable", "Possible"), levels = c("Possible", "Acceptable"))
@@ -214,6 +217,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 		} else {
 			oResidual <- data.frame(PC = character(), Replicate = character(), Marker = numeric(), Observed = numeric())
 		}
+    z$UseIt <- NULL
 		list(z = z, Outliers = AFLP.outlier(
 			Replicate = oReplicate[with(oReplicate, order(PC, Observed)), ],
 			Specimen = oSpecimen[with(oSpecimen, order(PC, Observed)), ],

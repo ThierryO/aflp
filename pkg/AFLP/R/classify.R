@@ -29,15 +29,15 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 	ExtraCols <- ExtraCols[!ExtraCols %in% c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score")]
 	dataset <- fluorescence(data)
 	dataset$Score <- NA
-	xLimits <- range(dataset$Normalised)
-	dataset$PCMarker <- paste(dataset$PC, dataset$Marker, sep = "_")
-	#x <- subset(dataset, PCMarker == "PC4_680")
+	xLimits <- range(dataset$Normalised, na.rm = TRUE)
+	dataset$PCMarker <- paste(dataset$PC, round(dataset$Marker, 2), sep = "_")
+	#x <- subset(dataset, PCMarker == "PC2_591")
 	#x <- subset(dataset, PCMarker == "B_100.803076923077")
 	result <- dlply(dataset, "PCMarker", function(x){
 		if(keep.border){
 			Border <- border(data, x$PC, x$Marker)
 		} else {
-			Dens <- density(x$Normalised, n = 3000)
+			Dens <- density(na.omit(x$Normalised), n = 3000)
 			Dens <- data.frame(Normalised = Dens$x, Density = Dens$y)
 			Dens$First <- c(0, diff(Dens$Density))
 			Dens$Second <- c(0, diff(Dens$First)) > 0
@@ -72,10 +72,10 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 			if(is.finite(Border)){
 				x$Score <- ifelse(x$Normalised <= Border, 0, 1)
         if(min(table(x$Score)) / nrow(x) <= tresholdMonomorph){
-          x$Score <- ifelse(is.na(x$Sign) | x$Sign > 0, 1, 0)
+          x$Score <- ifelse(is.na(x$Normalised), NA, ifelse(is.na(x$Sign) | x$Sign > 0, 1, 0))
         }
 			} else {
-				x$Score <- ifelse(is.na(x$Sign) | x$Sign > 0, 1, 0)
+			  x$Score <- ifelse(is.na(x$Normalised), NA, ifelse(is.na(x$Sign) | x$Sign > 0, 1, 0))
 			}
 		}
 		list(Fluorescence = x[, c("PC", "Replicate", "Fluorescence", "Marker", "Normalised", "Score", ExtraCols)], Border = data.frame(PC = unique(x$PC), Marker = unique(x$Marker), Border = Border))
