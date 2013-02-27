@@ -1,6 +1,6 @@
 Package: GRTS
 Type: Package
-Title: Analysis of AFLP data
+Title: Spatially balanced sampling based on GRTS
 Version: 0.1.1-53
 Date: 2011-02-27
 Author: Thierry Onkelinx, Paul Quataert

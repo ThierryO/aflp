@@ -1,7 +1,4 @@
 clean <- function(data){
-	if(!require(reshape)){
-		stop("This function requires the reshape package")
-	}
 	if(!is.AFLP(data)){
 		stop("This check is only useful on ALFP objects")
 	}

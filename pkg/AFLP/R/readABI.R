@@ -1,8 +1,8 @@
 readABI <- function(filename, add.to){
 	if(tail(strsplit(filename, "\\.")[[1]], 1) == "gz"){
-		dataset <- read.delim(gzfile(filename))
+		dataset <- read.delim(gzfile(filename), stringsAsFactors = FALSE)
 	} else {
-		dataset <- read.delim(filename)
+		dataset <- read.delim(filename, stringsAsFactors = FALSE)
 	}
 	fluorescence(add.to) <- 
 		rbind(
