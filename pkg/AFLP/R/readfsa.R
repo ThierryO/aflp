@@ -31,7 +31,13 @@ read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(Siz
           summary(lm(SizeStandard ~ stats::poly(Index[-i], 2)))$r.squared
         }))]
       } else {
-        stop("More than one extra Index")
+        toTry <- combn(length(Index), length(Index) - length(SizeStandard))
+        if(ncol(toTry) > 1000){
+          toTry <- toTry[, sample(ncol(toTry), 1000)]
+        }
+        Index <- Index[-toTry[, which.max(sapply(seq_len(ncol(toTry)), function(i){
+          summary(lm(SizeStandard ~ stats::poly(Index[-toTry[, i]], 2)))$r.squared
+        }))]]
       }
     }
     model0 <- lm(SizeStandard ~ Index)
@@ -109,7 +115,13 @@ read.fsa <- function(path = ".", files = NULL, dye, SizeStandard, Breaks = NULL,
           summary(lm(SizeStandard ~ stats::poly(Index[-i], 2)))$r.squared
         }))]
       } else {
-        stop("More than one extra Index")
+        toTry <- combn(length(Index), length(Index) - length(SizeStandard))
+        if(ncol(toTry) > 1000){
+          toTry <- toTry[, sample(ncol(toTry), 1000)]
+        }
+        Index <- Index[-toTry[, which.max(sapply(seq_len(ncol(toTry)), function(i){
+          summary(lm(SizeStandard ~ stats::poly(Index[-toTry[, i]], 2)))$r.squared
+        }))]]
       }
     }
     model0 <- lm(SizeStandard ~ Index)
