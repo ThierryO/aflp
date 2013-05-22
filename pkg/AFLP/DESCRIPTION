@@ -1,8 +1,8 @@
 Package: AFLP
 Type: Package
 Title: Analysis of AFLP data
-Version: 0.3.3-54
-Date: 2011-02-27
+Version: 0.4.0-59
+Date: 2013-05-05
 Author: Thierry Onkelinx, Pieter Verschelde, Sabrina Neirynck, David Halfmaerten, Gerrit Genouw, Paul Quataert
 Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>
 Description: This package assists the analysis of amplified fragment length 
@@ -11,5 +11,5 @@ Description: This package assists the analysis of amplified fragment length
   some basic analysis on the scored patterns.
 License: GPL-2
 LazyLoad: yes
-Depends: R (>= 2.10.0), methods, reshape
-Imports: lme4, plyr, ggplot2, mvtnorm, seqinr, zoo, signal, xtable, vegan
+Depends: R (>= 2.10.0)
+Imports: lme4, plyr, ggplot2, mvtnorm, seqinr, zoo, signal, xtable, vegan, methods, reshape

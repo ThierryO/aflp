@@ -1,32 +1,26 @@
 \name{specimens}
-\Rdversion{1.1}
 \alias{specimens}
-\title{
-Extracts the specimen information from an object
-}
-\description{
-Extracts the specimen information from an object
-}
-\usage{
-specimens(x)
-}
-%- maybe also 'usage' for other objects documented here.
+\title{Extracts the specimen information from an object}
 \arguments{
-  \item{x}{ an AFLP or AFLP.outlier object
-}
+  \item{x}{an AFLP or AFLP.outlier object}
 }
 \value{
-	The specimen information of the object
+  The specimen information of the object
 }
-\author{
-Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
-}
-\seealso{
-\code{\link{specimens-methods}},\code{\link{AFLP-class}},\code{\link{AFLP.outlier-class}}
+\description{
+  Extracts the specimen information from an object
 }
 \examples{
-	data(Tilia)
+data(Tilia)
 	specimens(Tilia)
 	specimens(outliers(Tilia))
 }
+\author{
+  Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul
+  Quataert
+}
+\seealso{
+  \code{\link{specimens-methods}},\code{\link{AFLP-class}},\code{\link{AFLP.outlier-class}}
+}
 \keyword{attribute}
+

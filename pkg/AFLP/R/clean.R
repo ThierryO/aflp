@@ -1,3 +1,33 @@
+#'Does some rudimentary cleaning of an AFLP object.
+#'
+#'Does some rudimentary cleaning of an AFLP object. Mainly used to do get a
+#'clean object prior to normalisation.
+#'
+#'
+#'@param data An AFLP object
+#'@return A cleaned version of \code{data}
+#'@author Thierry Onkelinx \email{Thierry.Onkelinx@@inbo.be}, Paul Quataert
+#'@seealso \code{\link{normalise}}
+#'@keywords manip
+#'@examples
+#'
+#'  data(TiliaDesign)
+#'  TiliaC <- as.AFLP(TiliaDesign)
+#'  TiliaC <- readSAGA(
+#'    system.file("extdata", "Tilia_bandvaluespc1", package = "AFLP"), 
+#'    add.to = TiliaC)
+#'  TiliaC <- readSAGA(
+#'    system.file("extdata", "Tilia_bandvaluespc2", package = "AFLP"), 
+#'    add.to = TiliaC)
+#'  TiliaC <- readSAGA(
+#'    system.file("extdata", "Tilia_bandvaluespc3", package = "AFLP"), 
+#'    add.to = TiliaC)
+#'  TiliaC <- readSAGA(
+#'    system.file("extdata", "Tilia_bandvaluespc4", package = "AFLP"), 
+#'    add.to = TiliaC)
+#'  clean(TiliaC)
+#'
+#'@export
 clean <- function(data){
 	if(!is.AFLP(data)){
 		stop("This check is only useful on ALFP objects")

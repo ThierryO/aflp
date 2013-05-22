@@ -1,3 +1,21 @@
+#'Convert an object to a AFLP object
+#'
+#'This function allows to convert a list of specimen or a set of positions to
+#'an AFLP object. This is a good starting point for an analysis.
+#'
+#'
+#'@param x A data.frame or a matrix containing at least the columns Plate,
+#'Capilar, Lane, Replicate and Specimen. The column Group is optional.
+#'@param \dots more arguments passed to the function.
+#'@return An AFLP object
+#'@author Thierry Onkelinx \email{Thierry.Onkelinx@@inbo.be}, Paul Quataert
+#'@keywords manip
+#'@examples
+#'
+#'  data(TiliaDesign)
+#'  Tilia <- as.AFLP(TiliaDesign)
+#'
+#'@export
 as.AFLP <- function(x, ...){
 	if(is.AFLP(x)){
 		return(x)

@@ -1,3 +1,12 @@
+#'Internal functions of the AFLP package.
+#'
+#'Not intended for external use.
+#'
+#'
+#'@author Thierry Onkelinx \email{Thierry.Onkelinx@@inbo.be}, Paul Quataert
+#'@seealso \code{\link{AFLP-class}}
+#'@keywords internal
+#'@export
 borderProbability <- function(Fluor, Borders, Repeated){
 	ProbPresent <- sapply(Borders, function(x){
 		mean(Fluor$Normalised >= x)

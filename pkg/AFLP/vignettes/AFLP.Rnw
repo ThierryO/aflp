@@ -11,7 +11,7 @@
 \usepackage{placeins}
 
 % \VignetteIndexEntry{Introduction to the AFLP package}
-% \VignetteDepends{methods, lme4, reshape, plyr, ggplot2, vegan, xtable, mvtnorm}
+% \VignetteDepends{AFLP, xtable}
 % \VignetteKeyword{AFLP}
 % \VignetteKeyword{genetics}
 
@@ -92,11 +92,8 @@ fluorescence(Tilia) <- Your.data.frame
 Prior to the normalisation you should use the \textbf{clean} function. This will do some sanity checking on the \texttt{AFLP} object, especially on missing data.
 
 <<clean run>>=
-message("Test A")
 Tilia <- clean(Tilia)
-message("Test B")
 output <- normalise(Tilia, output = "none") 
-message("Test C")
 @
 
 The normalisation estimates the effects of replicate, plate, lane, capilar and marker on the average fluorescence. The algorithm selects the appropriate combination of effects based on the design and the number of markers. The user has to decide which transformation to use. One can choose among \texttt{transformation = "log"} (default), \texttt{transformation = "logit"} and \texttt{transformation = "none"}.

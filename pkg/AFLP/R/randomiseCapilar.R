@@ -1,3 +1,51 @@
+#'Randomise specimens over different capilar AFLP plates.
+#'
+#'This function randomises Specimens over the required number of plates
+#'depending on the size of the plates, the minimum ratio of replications and
+#'the number of quality control specimens per plate.
+#'
+#'
+#'@param Specimens Either the number of specimens or a vector with the names of
+#'the specimens.
+#'@param Group A vector indication the a priori clustering of specimens. Must
+#'be as long as the number of specimens and in the same order. When missing, no
+#'a priori clustering is assumed. Defaults to NULL.
+#'@param FirstLabID Start the replicate numbering at this number. Defaults to
+#'1.
+#'@param Prefix Optional prefix for the replicate names. Defaults to "".
+#'@param nCapilar Number of available capilars. Defaults to 8.
+#'@param nLines Number of available lines on a plate. Defaults to 12.
+#'@param QC A data.frame with the positions of the quality control samples. See
+#'the examples.
+#'@param rReplicates Percentage of the samples that are reserved for
+#'replicates. Default = 0.1 (10\%).
+#'@param minReplicates Minimum number of samples reserved for replicates.
+#'Defaults to 8. Only relevant when the number of specimens is very low.
+#'@param fillPlate If TRUE, all plates will be filled with samples. If needed,
+#'extra specimens are replicated.  If FALSE, only the lines will be filled.
+#'Possibly leaves one or more lines on the last plate without samples. Defaults
+#'to TRUE.
+#'@return Results in an AFLP object with randomised replicates.
+#'@author Thierry Onkelinx \email{Thierry.Onkelinx@@inbo.be}, Paul Quataert
+#'@seealso \code{\link{as.AFLP}}, \code{\link{normalise}}
+#'@keywords design
+#'@examples
+#'
+#'	randomiseCapilar(100)
+#'
+#'	#example with quality control samples
+#'	QCsamples <- data.frame(
+#'    Capilar = c("E", "F"), 
+#'    Line = c(5, 5), 
+#'    ID = c("BL", "QCmethod"), 
+#'    Type = c("Blanco","QC")
+#'  )
+#'	nSpecimens <- 180
+#'	Group <- sample(10, nSpecimens, replace = TRUE)
+#'	randomiseCapilar(nSpecimens, Group, 
+#'    FirstLabID = 626, Prefix = "C/11/", QC = QCsamples)
+#'
+#'@export
 randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCapilar = 8, nLines = 12, QC, rReplicates = 0.1, minReplicates = 8, fillPlate = FALSE){
   # #####################
   # Fooling R CMD check #
@@ -7,7 +55,7 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
   # Fooling R CMD check #
   #######################
   
-	if(is.numeric(Specimens)){
+	if(is.numeric(Specimens) & length(Specimens) == 1){
 		Specimens <- seq_len(Specimens)
 	}
 	if(missing(Group)){
@@ -77,9 +125,12 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 			) ^ 10
 		#add replicate within plate and capilar
 		
-		Remain <- subset(cast(Plate + Capilar ~ ., data = Design, subset = is.na(Specimen), value = "Prob", fun.aggregate = c(length, mean)), length >= 2)
-		i <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:2]
-		lines <- sample(subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar == i$Capilar)$Line, 2)
+    Remain <- aggregate(Prob ~ Plate + Capilar, data = subset(Design, is.na(Specimen)), FUN = mean)
+    Remain2 <- aggregate(Prob ~ Plate + Capilar, data = subset(Design, is.na(Specimen)), FUN = length)
+    Remain <- Remain[Remain2$Prob >= 2, ]
+    rm(Remain2)
+    i <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$Prob), 1:2]
+  	lines <- sample(subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar == i$Capilar)$Line, 2)
 		Design$Specimen[with(Design, Plate == i$Plate & Capilar == i$Capilar & Line %in% lines)] <- Specimens[1]
 		Design$Prob <- 
 			(
@@ -119,7 +170,9 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 		extraN <- sum(is.na(Design$Specimen)) - length(Specimens)
 		Design$Specimen[sample(which(is.na(Design$Specimen)), extraN)] <- sample(Specimens, extraN)
 	}
-	Design$Specimen[is.na(Design$Specimen)] <- sample(Specimens)
+  if(any(is.na(Design$Specimen))){
+	  Design$Specimen[is.na(Design$Specimen)] <- sample(Specimens, sum(is.na(Design$Specimen)))
+  }
 	Design$Prob <- NULL
 	Design <- rbind(Design, QualityControl)
 	Design$Lane <- factor(Design$Line)

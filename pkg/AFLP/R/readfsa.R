@@ -1,3 +1,28 @@
+#'Estimate optimal binning from fsa files
+#'
+#'Estimate optimal binning from fsa files.
+#'
+#'
+#'@param files A vector of filenames. Can be a relative or an absolute path.
+#'@param path The base path for the filenames. Defaults to the working
+#'directory.
+#'@param dye A vector with the names of the dyes used for the data.
+#'@param SizeStandard A numeric vector with basepairs of the size standard.
+#'@param Range A numeric vector of length 2 with the lower and upper limit of
+#'the desired markers (in number of base pairs).
+#'@param binwidth The desired width of the bins.
+#'@param SNR Maximum signal-to-noise ratio for peaks of the size standard. Used
+#'to ignore unwanted very strong peaks.
+#'@param verbose Print the name of each file when processing it. Useful for
+#'tracking progress.
+#'@return A names list with the breaks for each dye.
+#'@author Thierry Onkelinx \email{Thierry.Onkelinx@@inbo.be}, Paul Quataert
+#'@seealso \code{\link{read.fsa}}
+#'@keywords manip
+#'@export
+#'@importFrom seqinr read.abif
+#'@importFrom signal specgram
+#'@importFrom zoo rollmax
 read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
   Peaks <- do.call(rbind, lapply(seq_along(files), function(i){
     filename <- files[i]
@@ -45,6 +70,7 @@ read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(Siz
     window <- 15
     fftn <- 2 ^ ceiling(log2(window))
     spg <- specgram(pattern[, "DATA.105"], fftn, Fs, window, window - binwidth)
+    
     Peak <- scale(abs(spg$S[which.min(abs(spg$f - 1)), ]))[, 1]
     Index <- which(Peak == rollmax(Peak, k = 1 + 2 * floor((min(diff(SizeStandard)) * Fs - 1) / 2), fill = -Inf))
     Index <- Index[Peak[Index] <= SNR]
@@ -70,7 +96,36 @@ read.fsa.bins <- function(files, path = "", dye, SizeStandard, Range = range(Siz
   return(Breaks)
 }
 
-read.fsa <- function(path = ".", files = NULL, dye, SizeStandard, Breaks = NULL, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
+
+
+#'Get fluorescence data from fsa files
+#'
+#'Read fluorescence data from fsa files.
+#'
+#'
+#'@param files A vector of filenames. Can be a relative or an absolute path.
+#'@param path The base path for the filenames. Defaults to the working
+#'directory.
+#'@param dye A vector with the names of the dyes used for the data.
+#'@param SizeStandard A numeric vector with basepairs of the size standard.
+#'@param Breaks A named list with the breaks used for binning the fluorescence.
+#'If missing the breaks are estimated by read.fsa.bins()
+#'@param Range A numeric vector of length 2 with the lower and upper limit of
+#'the desired markers (in number of base pairs).
+#'@param binwidth The desired width of the bins.
+#'@param SNR Maximum signal-to-noise ratio for peaks of the size standard. Used
+#'to ignore unwanted very strong peaks.
+#'@param verbose Print the name of each file when processing it. Useful for
+#'tracking progress.
+#'@return A data.frame with 5 variables: Filename, Dye, Marker, Binwidth and
+#'Fluorescence.
+#'@author Thierry Onkelinx \email{Thierry.Onkelinx@@inbo.be}, Paul Quataert
+#'@seealso \code{\link{read.fsa.bins}}
+#'@keywords manip
+#'@importFrom seqinr read.abif
+#'@importFrom signal specgram
+#'@export
+read.fsa <- function(path = "./", files = NULL, dye, SizeStandard, Breaks = NULL, Range = range(SizeStandard), binwidth = 1, SNR = 20, verbose = TRUE){
   if(missing(files)){
     files <-  list.files(path, pattern = "fsa$", recursive = TRUE)
   }

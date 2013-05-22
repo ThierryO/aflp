@@ -1,3 +1,19 @@
+#'Principal component analysis
+#'
+#'Principal component analysis
+#'
+#'
+#'@name princomp-methods
+#'@aliases princomp-methods princomp,AFLP-method
+#'@docType methods
+#'@section Methods: \describe{
+#'
+#'\item{x = "AFLP"}{PCO on a AFLP object}
+#'
+#'\item{x = "ANY"}{princomp on \code{x}} }
+#'@keywords methods classif
+#'@exportMethod princomp
+
 setMethod("princomp", signature(x = "AFLP"), function(x, method = c("normalised", "raw", "Jaccard"), axes = c(1, 2), screeplot = FALSE,...){
 	method <- match.arg(method)
 	if(all(is.na(fluorescence(x)$Score))){

@@ -1,3 +1,20 @@
+#'Performs hierarchical clustering
+#'
+#'Performs hierarchical clustering
+#'
+#'
+#'@name hclust-methods
+#'@aliases hclust-methods hclust,AFLP-method
+#'@docType methods
+#'@section Methods: \describe{
+#'
+#'\item{d = "AFLP"}{Performs hierarchical clustering on an AFLP object}
+#'
+#'\item{d = "ANY"}{Performs hierarchical clustering} }
+#'@keywords methods classif
+#'@exportMethod hclust
+#'@importFrom reshape cast
+#'@importFrom vegan vegdist
 setMethod("hclust", signature(d = "AFLP"), function(d, method ="complete", members = NULL){
 	if(all(is.na(fluorescence(d)$Score))){
 		stop("AFLP data must be classified first")

@@ -1,17 +1,18 @@
-\name{princomp-methods}
 \docType{methods}
+\name{princomp-methods}
 \alias{princomp-methods}
 \alias{princomp,AFLP-method}
 \title{Principal component analysis}
 \description{
-Principal component analysis
+  Principal component analysis
 }
 \section{Methods}{
-\describe{
+  \describe{
 
-\item{x = "AFLP"}{PCO on a AFLP object}
+  \item{x = "AFLP"}{PCO on a AFLP object}
 
-\item{x = "ANY"}{princomp on \code{x}}
-}}
-\keyword{methods}
+  \item{x = "ANY"}{princomp on \code{x}} }
+}
 \keyword{classif}
+\keyword{methods}
+

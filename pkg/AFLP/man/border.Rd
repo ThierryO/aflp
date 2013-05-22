@@ -1,38 +1,31 @@
 \name{border}
-\Rdversion{1.1}
 \alias{border}
-\title{
-Extracts the cut-levels of an AFLP object
-}
-\description{
-Extracts the cut-levels of an AFLP object
-}
-\usage{
-border(data, pc, marker)
-}
+\title{Extracts the cut-levels of an AFLP object}
 \arguments{
-  \item{data}{
-	An AFLP object
-}
-  \item{pc}{
-	The primer combination for which we want the cut-levels.
-}
-  \item{marker}{
-	The marker for which we want the cut-levels.
-}
+  \item{data}{An AFLP object}
+
+  \item{pc}{The primer combination for which we want the
+  cut-levels.}
+
+  \item{marker}{The marker for which we want the
+  cut-levels.}
 }
 \value{
-	A vector of cut-levels.
+  A vector of cut-levels.
 }
-\author{
-Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul Quataert
-}
-
-\seealso{
-\code{\link{border-method}}
+\description{
+  Extracts the cut-levels of an AFLP object
 }
 \examples{
-  data(Tilia)
-  BorderList <- border(Tilia)
+data(Tilia)
+ BorderList <- border(Tilia)
+}
+\author{
+  Thierry Onkelinx \email{Thierry.Onkelinx@inbo.be}, Paul
+  Quataert
+}
+\seealso{
+  \code{\link{border-method}}
 }
 \keyword{attribute}
+
