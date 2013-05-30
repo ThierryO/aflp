@@ -113,10 +113,20 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 	QualityControl <- subset(Design, !is.na(Replicate))
 	Design <- subset(Design, is.na(Replicate))
 	Design <- Design[with(Design, order(Plate, Line, Capilar)), ]
-	Design$Replicate<- sprintf("%s%04i", Prefix, seq_len(nrow(Design)) + FirstLabID - 1)
-	Specimens <- sample(Specimens)
+	Design$Replicate <- sprintf("%s%04i", Prefix, seq_len(nrow(Design)) + FirstLabID - 1)
+  Specimens <- sample(Specimens)
+
   
-	while(sum(is.na(Design$Specimen)) - length(Specimens) >= 2 + (nPlate > 1)){
+  
+  
+  
+  
+  
+  
+	while(sum(is.na(Design$Specimen)) - length(Specimens) >= 2 + (nPlate > 1) & length(Specimens) > 0){
+# sum(is.na(Design$Specimen)) - length(Specimens)
+# 2 + (nPlate > 1)
+# length(Specimens)
 		Design$Prob <- 
 			(
 				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
@@ -124,11 +134,15 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
 			) ^ 10
 		#add replicate within plate and capilar
+# ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
 		
     Remain <- aggregate(Prob ~ Plate + Capilar, data = subset(Design, is.na(Specimen)), FUN = mean)
     Remain2 <- aggregate(Prob ~ Plate + Capilar, data = subset(Design, is.na(Specimen)), FUN = length)
     Remain <- Remain[Remain2$Prob >= 2, ]
     rm(Remain2)
+    if(nrow(Remain) == 0){
+      break
+    }
     i <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$Prob), 1:2]
   	lines <- sample(subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar == i$Capilar)$Line, 2)
 		Design$Specimen[with(Design, Plate == i$Plate & Capilar == i$Capilar & Line %in% lines)] <- Specimens[1]
@@ -138,10 +152,13 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 			* 
 				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
 			) ^ 10
+# ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
 		#add replicate within plate and between capilar
-		Remain <- subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar != i$Capilar)
+
+    Remain <- subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar != i$Capilar)
 		j <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:3]
 		Design$Specimen[with(Design, Plate == j$Plate & Capilar == j$Capilar & Line == j$Line)] <- Specimens[1]
+# ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
 		if(length(unique(Design$Plate)) > 1){
 		  Design$Prob <- 
   			(
@@ -166,13 +183,48 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
     }
 		Specimens <- Specimens[-1]
 	}
-	if(sum(is.na(Design$Specimen)) > length(Specimens)){
-		extraN <- sum(is.na(Design$Specimen)) - length(Specimens)
-		Design$Specimen[sample(which(is.na(Design$Specimen)), extraN)] <- sample(Specimens, extraN)
-	}
-  if(any(is.na(Design$Specimen))){
-	  Design$Specimen[is.na(Design$Specimen)] <- sample(Specimens, sum(is.na(Design$Specimen)))
+   
+
+  
+  
+  
+#   ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
+
+  
+  while(any(is.na(Design$Specimen)) & length(Specimens) > 0){
+    toDo <- which(is.na(Design$Specimen))
+    if(length(toDo) > 1){
+      Design$Specimen[sample(toDo, 1)] <- Specimens[1]
+    } else {
+      Design$Specimen[toDo] <- Specimens[1]
+    }
+    Specimens <- Specimens[-1]
   }
+
+  
+#   ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
+
+  while(any(is.na(Design$Specimen))){
+    Current <- table(factor(Design$Specimen))
+    Current <- max(Current) - Current
+    if(any(Current > 0)){
+      newSpecimen <- sample(names(Current), 1, prob = Current)
+    } else {
+      newSpecimen <- sample(names(Current), 1)
+    }
+    toDo <- which(is.na(Design$Specimen))
+    if(length(toDo) > 1){
+      Design$Specimen[sample(toDo, 1)] <- newSpecimen
+    } else {
+      Design$Specimen[toDo] <- newSpecimen
+    }
+  }  
+
+  
+  
+  
+  
+  
 	Design$Prob <- NULL
 	Design <- rbind(Design, QualityControl)
 	Design$Lane <- factor(Design$Line)
