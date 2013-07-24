@@ -202,11 +202,11 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 			print(xtable(SpecimenDeviance[, colnames(SpecimenDeviance) %in% c("Specimen", "Raw", "Normalised")], caption = "Repeatability for specimens based on fluorescence. Smaller is better.", align = "rrll", digits = c(0, 0, 3, 3), display = c("s", "s", "f", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 		}
 	} else if(output == "screen"){
-		X11()
+		dev.new()
 		print(pMarker + ggtitle("Repeatability for markers (fluorescence)"))
 		cat("\nRepeatability for markers\n\n")
 		print(MarkerDeviance[, colnames(MarkerDeviance) %in% c("PC", "Marker", "Raw", "Normalised", "Outlier")])
-		X11()
+		dev.new()
 		print(pSpecimen + ggtitle("Repeatability for specimens (fluorescence)"))
 		cat("\nRepeatability for specimens\n\n")
 		print(SpecimenDeviance[, colnames(SpecimenDeviance) %in% c("PC", "Specimen", "Raw", "Normalised", "Outlier")])
@@ -354,11 +354,11 @@ repeatability <- function(data, output = c("screen", "tex", "none"), bootstrap =
 					display = c("s", "s", "s", "s", "f", "d", "d"))
 			, include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 		} else if (output == "screen"){
-			X11()
+			dev.new()
 			print(pMarker + ggtitle("Repeatability for markers (score)"))
 			cat("\nRepeatability for markers\n\n")
 			print(qcMarker)
-			X11()
+			dev.new()
 			print(pSpecimen + ggtitle("Repeatability for specimens (score)"))
 			cat("\nRepeatability for specimens\n\n")
 			print(qcSpecimen)

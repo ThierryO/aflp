@@ -205,7 +205,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 				}
 				cat("\\FloatBarrier\n\n")
 			} else if (output != "none"){
-				X11()
+				dev.new()
 				print(p + ggtitle(paste(levels(currentPC)[currentPC], i)))
 				cat("\n\n", levels(currentPC)[currentPC], i, "\n")
 				if(nrow(Outlier) > 0){
@@ -237,7 +237,7 @@ normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, de
 			print(xtable(Outlier[order(Outlier$Observed), ], caption = caption, align = "llrr", digits = 3, display = c("s", "s", "f", "f")), include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, size = "tiny")
 			cat("\\FloatBarrier\n\n")
 		} else if (output != "none"){
-			X11()
+			dev.new()
 			print(p + ggtitle(paste(levels(currentPC)[currentPC], "residuals")))
 			cat("\n\n", levels(currentPC)[currentPC], "\n")
 			if(nrow(Outlier) > 0){

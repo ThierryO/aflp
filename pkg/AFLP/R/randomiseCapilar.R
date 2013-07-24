@@ -72,6 +72,8 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 		QC$ID <- factor(QC$ID, levels = levels(specList$Specimen))
 	}
 	Specimens <- factor(Specimens, levels = levels(specList$Specimen))
+  
+  
 	nPlate <- ceiling(length(Specimens) / ((nCapilar * nLines - nrow(QC)) * (1 - rReplicates)))
 	Design <- expand.grid(Capilar = LETTERS[seq_len(nCapilar)], Line = seq_len(nLines), Plate = seq_len(nPlate), Specimen = factor(NA, levels = levels(Specimens)), Replicate = NA)
 	if(nrow(QC) > 0){
@@ -84,7 +86,13 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 	if(!fillPlate){
 		lastLines <- ceiling((
 			length(Specimens) + 
-			pmax(ceiling(length(Specimens) * (1 / (1 - rReplicates) - 1)), minReplicates) + 
+			pmax(
+        ceiling(
+          length(Specimens) * 
+          (1 / (1 - rReplicates) - 1)
+        ), 
+        minReplicates
+      ) + 
 			nPlate * nrow(QC)
 		) / nCapilar) %% nLines
 		if(lastLines > 0){
@@ -123,10 +131,7 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
   
   
   
-	while(sum(is.na(Design$Specimen)) - length(Specimens) >= 2 + (nPlate > 1) & length(Specimens) > 0){
-# sum(is.na(Design$Specimen)) - length(Specimens)
-# 2 + (nPlate > 1)
-# length(Specimens)
+	while(sum(is.na(Design$Specimen)) - length(Specimens) >= ifelse(nPlate > 1, 5, 3) & length(Specimens) > 0){
 		Design$Prob <- 
 			(
 				table(subset(Design, is.na(Specimen))$Plate)[Design$Plate] / table(Design$Plate)[Design$Plate]
@@ -134,7 +139,7 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
 			) ^ 10
 		#add replicate within plate and capilar
-# ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
+# ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = ifelse(is.na(Specimen), "", sprintf("%s", Specimen)))) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green") + facet_wrap(~ Plate)
 		
     Remain <- aggregate(Prob ~ Plate + Capilar, data = subset(Design, is.na(Specimen)), FUN = mean)
     Remain2 <- aggregate(Prob ~ Plate + Capilar, data = subset(Design, is.na(Specimen)), FUN = length)
@@ -152,13 +157,11 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
 			* 
 				table(subset(Design, is.na(Specimen))$Capilar)[Design$Capilar] / table(Design$Capilar)[Design$Capilar]
 			) ^ 10
-# ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
-		#add replicate within plate and between capilar
 
+    #add replicate within plate and between capilar
     Remain <- subset(Design, is.na(Specimen) & Plate == i$Plate & Capilar != i$Capilar)
 		j <- Remain[sample(seq_len(nrow(Remain)), 1, prob = Remain$mean), 1:3]
 		Design$Specimen[with(Design, Plate == j$Plate & Capilar == j$Capilar & Line == j$Line)] <- Specimens[1]
-# ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
 		if(length(unique(Design$Plate)) > 1){
 		  Design$Prob <- 
   			(
@@ -188,9 +191,8 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
   
   
   
-#   ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
+#   ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green") + facet_wrap(~Plate)
 
-  
   while(any(is.na(Design$Specimen)) & length(Specimens) > 0){
     toDo <- which(is.na(Design$Specimen))
     if(length(toDo) > 1){
@@ -202,7 +204,7 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
   }
 
   
-#   ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green")
+#   ggplot(Design, aes(x = Capilar, y = Line, fill = Prob, label = Specimen)) + geom_tile() + geom_text() + scale_fill_gradient(low = "red", high = "green") + facet_wrap(~Plate)
 
   while(any(is.na(Design$Specimen))){
     Current <- table(factor(Design$Specimen))
@@ -220,10 +222,6 @@ randomiseCapilar <- function(Specimens, Group, FirstLabID = 1, Prefix = "", nCap
     }
   }  
 
-  
-  
-  
-  
   
 	Design$Prob <- NULL
 	Design <- rbind(Design, QualityControl)

@@ -19,6 +19,20 @@
 setGeneric("QC", function(data, which = c("all", "specimen", "replicate")) {
 	standardGeneric("QC")
 })
+
+#'Extracts the quality control samples of an AFLP object
+#'
+#'
+#'@name QC-method
+#'@aliases QC-method QC,AFLP-method
+#'@docType methods
+#'@section Methods: \describe{
+#'
+#'\item{x = "AFLP"}{Returns the QC information from an AFLP object}
+#'}
+#'@keywords methods attribute
+#'@export
+
 setMethod("QC", signature(data = "AFLP"), function(data, which = c("all", "specimen", "replicate")) {
 	which <- match.arg(which)
 	if(which == "all"){

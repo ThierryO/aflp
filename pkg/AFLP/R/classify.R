@@ -171,7 +171,7 @@ classify <- function(data, output = c("screen", "none", "tex"), maxBorder = 1, t
 				filename <- paste("Dens", sub(":", "_", sub(":", "_", unique(y$PC))), "_", unique(y$Group), ".pdf", sep = "")
 				ggsave.latex(pDens, caption = caption, filename = filename, path = path, width = 6, height = 6)
 			} else if (output == "screen"){
-				X11()
+				dev.new()
 				print(pDens + ggtitle(paste("Density of normalised fluorescence for", unique(y$PC))))
 			}
 		})
