@@ -53,15 +53,62 @@ ggsave.latex <- function(..., caption = NULL, label = NULL, figure.placement = "
 	
 	if(is.null(args[["width"]])){
 		if(is.null(args[["height"]])){
-			cat("        \\includegraphics[height = 7in, width = 7in]{", args[["filename"]], "}\n", sep = "")
+			cat(
+        "        \\includegraphics[height = 7in, width = 7in]{",
+        args[["filename"]], 
+        "}\n", 
+        sep = ""
+      )
 		} else {
-			cat("        \\includegraphics[height = ", args[["height"]], "in, width = 7in]{", args[["filename"]], "}\n", sep = "")
+			cat(
+        "        \\includegraphics[height = ", 
+        args[["height"]], 
+        ifelse(
+          is.null(args[["units"]]), 
+          "in", 
+          args[["units"]]
+        ), 
+        ", width = 7in]{", 
+        args[["filename"]], 
+        "}\n", 
+        sep = ""
+      )
 		}
 	} else {
 		if(is.null(args[["height"]])){
-			cat("        \\includegraphics[height = 7in, width = ", args[["width"]], "in]{", args[["filename"]], "}\n", sep = "")
+			cat(
+        "        \\includegraphics[height = 7in, width = ", 
+        args[["width"]], 
+        ifelse(
+          is.null(args[["units"]]), 
+          "in", 
+          args[["units"]]
+        ), 
+        "]{", 
+        args[["filename"]], 
+        "}\n", 
+      sep = "")
 		} else {
-			cat("        \\includegraphics[height = ", args[["height"]], "in, width = ", args[["width"]], "in]{", args[["filename"]], "}\n", sep = "")
+			cat(
+        "        \\includegraphics[height = ", 
+        args[["height"]], 
+        ifelse(
+          is.null(args[["units"]]), 
+          "in", 
+          args[["units"]]
+        ), 
+        ", width = ", 
+        args[["width"]], 
+        ifelse(
+          is.null(args[["units"]]), 
+          "in", 
+          args[["units"]]
+        ), 
+        "]{", 
+        args[["filename"]], 
+        "}\n", 
+        sep = ""
+      )
 		}
 	}
 	if(!is.null(caption) && caption.placement == "bottom"){
