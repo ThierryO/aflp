@@ -50,8 +50,6 @@
 #'@importFrom ggplot2 ggplot geom_line geom_ribbon geom_line aes aes_string
 #'@importFrom xtable xtable print.xtable
 #'@importFrom lme4 lmer ranef
-#'@importClassesFrom lme4 summary.mer
-#'@importMethodsFrom lme4 summary
 normalise <- function(data, output = c("screen", "tex", "none"), path = NULL, device = "pdf", SpecimenEffect = FALSE, level = 0.99, transformation = c("log", "logit", "none")){
   # #####################
   # Fooling R CMD check #

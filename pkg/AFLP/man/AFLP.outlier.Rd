@@ -2,10 +2,7 @@
 \alias{AFLP.outlier}
 \title{Creates an AFLP outlier object}
 \usage{
-  AFLP.outlier(Replicate = data.frame(PC = character(), Replicate = character(), Observed = numeric()),
-    Specimen = data.frame(PC = character(), Specimen = character(), Observed = numeric()),
-    Marker = data.frame(PC = character(), Marker = numeric(), Observed = numeric()),
-    Residual = data.frame(PC = character(), Replicate = character(), Marker = numeric(), Observed = numeric()))
+  AFLP.outlier(Replicate, Specimen, Marker, Residual)
 }
 \arguments{
   \item{Replicate}{A \code{data.frame} with three columns:

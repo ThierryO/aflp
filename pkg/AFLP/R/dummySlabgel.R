@@ -36,8 +36,20 @@
 #'@keywords design
 #'@examples
 #'
-#'	dummy <- dummySlabgel()
-#'
+#'	dummy <- dummySlabgel(nSpecimen = 50, nGroup = 2, nMarker = 50,
+#'    nReplicate = 3,
+#'	  markerProb = c(Monomorph = 0.2, Group = 0.5),
+#'	  fixed = c(Intercept = 9, Score = 1.7, MarkerTrend = -0.007),
+#'	  betaShape = c(0.3, 0.8),
+#'	  VarCov = list(
+#'		  Specimen = matrix(c(0.080, -0.017, -0.017, 0.025), ncol = 2), 
+#'		  Replicate = matrix(c(0.116, -0.059, -0.059, 0.043), ncol = 2), 
+#'		  Marker = matrix(c(0.581, -0.236, -0.236, 0.326), ncol = 2), 
+#'		  Plate = matrix(c(0.154, -0.035, -0.035, 0.027), ncol = 2), 
+#'		  Noise = 0.292
+#'	  ),
+#'	  transformation = "log"
+#'  )
 #'@importFrom mvtnorm rmvnorm
 #'@export
 dummySlabgel <- function(nSpecimen = 50, nGroup = 2, nMarker = 50,
@@ -45,13 +57,7 @@ dummySlabgel <- function(nSpecimen = 50, nGroup = 2, nMarker = 50,
 	markerProb = c(Monomorph = 0.2, Group = 0.5),
 	fixed = c(Intercept = 9, Score = 1.7, MarkerTrend = -0.007),
 	betaShape = c(0.3, 0.8),
-	VarCov = list(
-		Specimen = matrix(c(0.080, -0.017, -0.017, 0.025), ncol = 2), 
-		Replicate = matrix(c(0.116, -0.059, -0.059, 0.043), ncol = 2), 
-		Marker = matrix(c(0.581, -0.236, -0.236, 0.326), ncol = 2), 
-		Plate = matrix(c(0.154, -0.035, -0.035, 0.027), ncol = 2), 
-		Noise = 0.292
-	),
+	VarCov,
 	transformation = c("log", "logit", "none")){
 
 	transformation <- match.arg(transformation)
