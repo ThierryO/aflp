@@ -2,7 +2,7 @@
 \alias{randomiseTimestamp}
 \title{create a random order for the timestamps}
 \usage{
-  randomiseTimestamp(timestamp, min.difference = 10)
+  randomiseTimestamp(timestamp, min.difference = 5)
 }
 \arguments{
   \item{timestamp}{a vector of timestamps}

@@ -4,7 +4,7 @@
 #' @return a vector with the new order of the timestamps
 #' @export
 
-randomiseTimestamp <- function(timestamp, min.difference = 10){
+randomiseTimestamp <- function(timestamp, min.difference = 5){
   candidate <- seq(
     min(timestamp) - min.difference,
     max(timestamp) + min.difference,

@@ -1,7 +1,7 @@
 Package: RecSelect
 Type: Package
 Title: Using GRTS to sample along time
-Version: 0.1-67
+Version: 0.1-68
 Date: 2013-10-25
 Author: Thierry Onkelinx
 Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>

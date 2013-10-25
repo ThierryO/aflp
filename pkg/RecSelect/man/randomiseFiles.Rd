@@ -3,7 +3,7 @@
 \title{Copy a set of files with a randomised order.}
 \usage{
   randomiseFiles(path, output, recursive = TRUE,
-    sub.dir = TRUE, extension = "WAV")
+    sub.dir = TRUE, extension = "WAV", min.difference = 5)
 }
 \arguments{
   \item{path}{the path of the directory with the files.
@@ -26,6 +26,9 @@
 
   \item{sub.dir}{Process the files per subdirectory?
   Defaults to TRUE}
+
+  \item{min.difference}{the minimal difference between two
+  timestamps in seconds.}
 }
 \description{
   Copy a set of files with a randomised order.

@@ -4,10 +4,11 @@
 #' @param extension which file extension should be used? Defaults to 'WAV'. File extensions are not case sensitive.
 #' @param recursive should all subdirectories be processed as well? Defaults to TRUE.
 #' @param sub.dir Process the files per subdirectory? Defaults to TRUE
+#' @param min.difference the minimal difference between two timestamps in seconds.
 #' @export
 #' @importFrom plyr ddply
 #' @importFrom tcltk tk_choose.dir
-randomiseFiles <- function(path, output, recursive = TRUE, sub.dir = TRUE, extension = "WAV"){
+randomiseFiles <- function(path, output, recursive = TRUE, sub.dir = TRUE, extension = "WAV", min.difference = 5){
   if(missing(path)){
     path <- tk_choose.dir(getwd(), "Choose the main folder with the input files")
   }
@@ -21,7 +22,7 @@ randomiseFiles <- function(path, output, recursive = TRUE, sub.dir = TRUE, exten
       x
     })
   } else {
-    files$order <- randomiseTimestamp(files$timestamp)
+    files$order <- randomiseTimestamp(files$timestamp, min.difference = min.difference)
   }
   files$newpath <- paste(
     output, 
@@ -31,15 +32,21 @@ randomiseFiles <- function(path, output, recursive = TRUE, sub.dir = TRUE, exten
   np <- sample(unique(files$newpath), 1)
   junk <- sapply(unique(files$newpath), function(np){
     if(!file.exists(np)){
-      dir.create(np)
+      dir.create(np, recursive = TRUE)
     }
   })
   n <- ceiling(log10(max(files$order)))
   fmt <- sprintf("%%s/%%0%ii_%%s", n)
+  files$newfile <- sprintf(fmt, files$newpath, files$order, files$file)
   copied <- file.copy(
     from = paste(files$path, files$file, sep = "/"),
-    to = sprintf(fmt, files$newpath, files$order, files$file)
+    to = files$newfile
+  )
+  files <- files[, c("newfile", "timestamp", "order")]
+  write.csv2(
+    files, 
+    file = paste(output, "filelist.csv", sep = "/")
   )
   message("Finished. ", sum(copied), " of ", length(copied), " files copied to ", output)
-  NULL
+  invisible(files)
 }
