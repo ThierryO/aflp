@@ -1,0 +1,6 @@
+export(getTimestamp)
+export(halvesRanking)
+export(randomiseFiles)
+export(randomiseTimestamp)
+importFrom(plyr,ddply)
+importFrom(tcltk,tk_choose.dir)

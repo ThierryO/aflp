@@ -1,0 +1,13 @@
+Package: RecSelect
+Type: Package
+Title: Using GRTS to sample along time
+Version: 0.1-67
+Date: 2013-10-25
+Author: Thierry Onkelinx
+Maintainer: Thierry Onkelinx <Thierry.Onkelinx@inbo.be>
+Description: Create a GRTS sample for timestamps.
+License: GPL-2
+LazyLoad: yes
+Depends: R (>= 2.10.0)
+Imports: plyr, tcltk
+Suggests: 
