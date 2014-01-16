@@ -1,0 +1,13 @@
+\name{switchColour}
+\alias{switchColour}
+\title{Switch the default colour of all geoms}
+\usage{
+switchColour(new.colour = INBObrown)
+}
+\arguments{
+  \item{new.colour}{the new default colour}
+}
+\description{
+Switch the default colour of all geoms
+}
+
