@@ -23,23 +23,23 @@ NULL
 #'  \item INBOextra
 #'}
 #'@docType data
-#'@export
+#'@export INBOblue INBObrown INBOdarkblue INBOdarkgreen INBOgreen INBOred INBOreddishbrown INBOextra
 #'@usage INBOblue
 #'@keywords datasets
 #'@seealso \code{\link{theme_INBO}}
 NULL
 
 #'@name page.height
-#'@aliases page.width, column.width, medium.width
-#'@title Standard dimensions for theElsevier style guide
+#'@aliases page.width column.width medium.width
+#'@title Standard dimensions for the Elsevier style guide
 #'\itemize{
 #'  \item{page.height}{Maximal height of a figuur (in inch)}
-#'  \item{page.width}{With of a figure covering two columns (in inch)}
-#'  \item{column.width}{With of a figure covering one column (in inch)}
-#'  \item{medium.width}{With of a figure covering 1.5 columns (in inch)}
+#'  \item{page.width}{Width of a figure covering two columns (in inch)}
+#'  \item{column.width}{Width of a figure covering one column (in inch)}
+#'  \item{medium.width}{Width of a figure covering 1.5 columns (in inch)}
 #'}
 #'@docType data
-#'@export
+#'@export page.height page.width column.width medium.width
 #'@usage page.height
 #'@keywords datasets
 #'@seealso \code{\link{theme_elsevier}}
