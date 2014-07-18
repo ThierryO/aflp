@@ -2,6 +2,11 @@
 #' 
 #'@export
 #'@importFrom ggplot2 theme element_blank
+#' @examples
+#'   library(ggplot2)
+#'   p <- ggplot(mtcars, aes(x = mpg, y = drat)) + geom_point()
+#'   p.map <- p + theme_map() 
+
 theme_map <- function () {
   theme(
     axis.text = element_blank(), 

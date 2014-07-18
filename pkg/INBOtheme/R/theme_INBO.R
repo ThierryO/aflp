@@ -5,6 +5,10 @@
 #' @export
 #' @importFrom ggplot2 theme element_line element_rect element_text element_blank rel
 #' @importFrom grid unit
+#' @examples
+#'   library(ggplot2)
+#'   p <- ggplot(mtcars, aes(x = mpg, y = drat)) + geom_point()
+#'   p.inbo <- p + theme_INBO() 
 theme_INBO <- function (base_size = 12, base_family = "") {
   theme(
     line = element_line(colour = "black", size = 0.5, linetype = 1, lineend = "butt"),  
@@ -38,7 +42,9 @@ theme_INBO <- function (base_size = 12, base_family = "") {
     panel.border = element_blank(), 
     panel.grid.major = element_line(colour = "white"), 
     panel.grid.minor = element_line(colour = percentcolor(INBOgreen, .80), size = 0.25), 
-    panel.margin = unit(0.25, "lines"), 
+    panel.margin = unit(0.25, "lines"),
+    panel.margin.x = NULL, 
+    panel.margin.y = NULL,
     strip.background = element_rect(fill = INBOgreen, colour = NA), 
     strip.text.x = element_text(colour = INBObrown), 
     strip.text.y = element_text(angle = -90, colour = INBObrown), 

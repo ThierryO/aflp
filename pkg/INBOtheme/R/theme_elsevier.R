@@ -7,6 +7,10 @@
 #' @export
 #' @importFrom ggplot2 theme element_line element_rect element_text element_blank rel
 #' @importFrom grid unit
+#' @examples
+#'   library(ggplot2)
+#'   p <- ggplot(mtcars, aes(x = mpg, y = drat)) + geom_point()
+#'   p.elsevier <- p + theme_elsevier() 
 
 theme_elsevier <- function (base_size = 7, base_family = "") {
   theme(
@@ -41,6 +45,8 @@ theme_elsevier <- function (base_size = 7, base_family = "") {
     panel.grid.major = element_line(colour = "grey90", size = 0.2), 
     panel.grid.minor = element_line(colour = "grey98", size = 0.5), 
     panel.margin = unit(0.25, "lines"), 
+    panel.margin.x = NULL, 
+    panel.margin.y = NULL,
     plot.background = element_rect(colour = "white"), 
     plot.margin = unit(c(0.25, 0.25, 0.25, 0.25), "lines"), 
     plot.title = element_text(size = rel(1.2)), 

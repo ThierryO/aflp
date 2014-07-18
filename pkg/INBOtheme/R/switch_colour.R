@@ -3,6 +3,9 @@
 #' @param new.colour the new default colour
 #' @importFrom ggplot2 update_geom_defaults
 #' @export
+#' @examples
+#'   switchColour("black")
+
 switchColour <- function(new.colour = INBObrown){
   update_geom_defaults("abline", list(colour = new.colour))
   update_geom_defaults("area", list(fill = new.colour))
